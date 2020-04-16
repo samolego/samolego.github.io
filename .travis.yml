@@ -2,24 +2,20 @@ language: node_js
 node_js:
   - "12.16.2"
 dist: trusty
+os: linux
 branches:
   only:
-  - master
+    - angular-src
 before_script:
   - npm install -g @angular/cli
 script:
-  - ng lint
-  - npm run test-headless
   - ng build --prod --base-href https://samolego.github.io
   
 deploy:
   provider: pages
+  strategy: git
   cleanup: false
   token: $github_token
   local_dir: docs/
   on:
     branch: master
-    
-branches:
-  only:
-    - angular-src
