@@ -1,8 +1,7 @@
 language: node_js
 node_js:
-  - "9"
+  - "12.16.2"
 dist: trusty
-sudo: required
 branches:
   only:
   - master
@@ -16,7 +15,11 @@ script:
 deploy:
   provider: pages
   cleanup: false
-  github_token: $github_token
-  local_dir: dist/
+  token: $github_token
+  local_dir: docs/
   on:
     branch: master
+    
+branches:
+  only:
+    - angular-src
