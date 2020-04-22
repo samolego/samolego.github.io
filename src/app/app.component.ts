@@ -6,12 +6,14 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'website';
 
+	constructor() { }
+  
   ngOnInit(): void {
-    // Auto-closing navbar on mobile
-    $('.navbar-nav>li>a').on('click', function(){
-      (<any>$(".navbar-collapse")).collapse('hide');
-    });
+    document.getElementById("main").style.minHeight = 
+    Math.max(
+      document.documentElement.clientHeight, window.innerHeight ||
+      0
+    ) - 195 + "px";
   }
 }

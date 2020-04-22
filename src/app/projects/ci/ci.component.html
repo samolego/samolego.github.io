@@ -1,1 +1,119 @@
-<p>ci works!</p>
+<section class="wow fadeIn">
+    <strong>
+        Developer builds
+    </strong><br>
+    <button class="btn lime dropdown-toggle mr-4" [ngSwitch]="projectName" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <ngswitch *ngSwitchCase="null">Select Project</ngswitch>
+        <ngswitch *ngSwitchDefault>{{ projectName }}</ngswitch>
+    </button>
+    <div class="dropdown-menu" id="projectsSelector">
+        <button class="dropdown-item" *ngFor="let repo of repos" (click)='loadProjectBuilds(this.repo.name)'>
+            {{ repo.name }}
+        </button>
+    </div>
+</section>
+
+<hr class="my-5">
+  
+<section class="text-center">
+    <!--Builds from GitHub-->
+    <div class="row flex-xl-nowrap mb-4 wow fadeIn">
+        <div class="col-md-3 col-sm-4 col-xs-5 w-20 p-1 side-nav">
+            <nav>
+                <div id="sidebar" class="side-nav fixed">
+                    <spinner *ngIf="projectName == null" class="spinner-border text-info mx-auto" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </spinner>
+                    <div *ngIf="workflowRuns != null && workflowRuns['total_count'] != 0" class="p-4 border lime lighten-5">
+                        <loop-builds *ngFor="let workflowRun of workflowRuns">
+                            <div class="mb-4 active bd-sidenav-active">
+                                <button class="btn btn-{{ getColor(workflowRun.conclusion) }}" (click)='loadBuild(workflowRun.run_number)'>
+                                    Build#{{ workflowRun.run_number }}
+                                </button>
+                            </div>
+                        </loop-builds>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <!-- Build Info -->
+        <div class="col-md-9 col-sm-8 col-xs-7 w-auto p-3" id="buildInfo">
+            <div class="col">
+                <not-selected *ngIf="projectName == null">
+                    Choose a project to show development builds.
+                </not-selected>
+                <h2 *ngIf="projectName != null">
+                    <b>{{ this.projectName }}</b>
+                </h2>
+                <br>
+                <div *ngIf="builds != null" [ngSwitch]="builds['total_count']">
+                    <no-builds *ngSwitchCase="0">
+                        Sorry, there are no dev builds available for this project.
+                    </no-builds>
+                    <builds *ngSwitchDefault>
+                        <build-not-selected *ngIf="selectedBuild == null">
+                            Please select the build.
+                        </build-not-selected>
+                        <build-selected *ngIf="selectedBuild != null">
+                            <div class="text-left">
+                                <div class="row">
+                                    <h3><b>Selected Build: {{ this.selectedBuild.run_number }}</b></h3>
+                                </div>
+                                <div class="row">
+                                    <h5 class="{{ getColor(this.selectedBuild.conclusion) }}-text">
+                                        <b>
+                                        Status
+                                        <i class="fas fa-check m-1" *ngIf="this.selectedBuild.conclusion == 'success'"></i>
+                                        <i class="fas fa-times m-1" *ngIf="this.selectedBuild.conclusion == 'failure'"></i>
+                                        : {{ this.selectedBuild.conclusion }}
+                                        </b>
+                                    </h5>
+                                </div>
+                                <div class="row">
+                                    <commit>
+                                        <b>Commit message<i class="fas fa-code ml-1 mr-1"></i>:</b><p>{{ this.selectedBuild.head_commit.message }}</p>
+                                    </commit>
+                                </div>
+                                <div class="row">
+                                    <branch>
+                                        <b>Branch<i class="fas fa-code-branch ml-1 mr-1"></i>:</b><p>{{ this.selectedBuild.head_branch }}</p>
+                                    </branch>
+                                </div>
+                                <div class="row">
+                                    <div class="border elegant-color-dark text-light" style="width: 100%; height:fit-content;">
+                                        <div class="border special-color-dark text-light p-2" style="width: 100%;">
+                                            <b><i class="fas fa-terminal ml-1 mr-1"></i>Console Log</b>
+                                        </div>
+                                        <div class="p-2" *ngIf="this.steps != null">
+                                            <jobs *ngFor="let step of this.steps">
+                                                <p class="{{ getColor(step.conclusion) }}-text text-monospace">
+                                                    <i class="far fa-check-circle mr-1" *ngIf="step.conclusion == 'success'"></i>
+                                                    <i class="far fa-times-circle mr-1" *ngIf="step.conclusion == 'failure'"></i>
+                                                    {{ step.name }}
+                                                </p>
+                                                <!--div class="accordion" id="consoleAccordion">
+                                                    <div class="card-header" id="heading{{ step.number }}">
+                                                    <h5 class="mb-0">
+                                                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                                            <i class="far fa-check-circle mr-1" *ngIf="step.conclusion == 'success'"></i>
+                                                            <i class="far fa-times-circle mr-1" *ngIf="step.conclusion == 'failure'"></i>
+                                                            {{ step.name }}
+                                                        </button>
+                                                    </h5>
+                                                    </div>
+                                                    <div id="collapseTwo" class="collapse" aria-labelledby="heading{{ step.number }}" data-parent="#consoleAccordion">
+                                                        textInfo
+                                                    </div>
+                                                </div-->
+                                            </jobs>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </build-selected>
+                    </builds>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

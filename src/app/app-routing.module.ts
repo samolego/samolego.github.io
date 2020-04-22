@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ProjectsComponent } from './projects/projects.component';
+import { CiComponent } from './projects/ci/ci.component';
 import { HomeComponent } from './home/home.component';
 import { VideosComponent } from './videos/videos.component';
 import { AndroidComponent } from './android/android.component';
@@ -13,6 +14,10 @@ const routes: Routes = [
   {
     path: 'projects',
     component: ProjectsComponent
+  },
+  {
+    path: 'projects/ci',
+    component: CiComponent
   },
   {
     path: 'videos',

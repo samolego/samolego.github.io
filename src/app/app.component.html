@@ -1,6 +1,6 @@
 <header>
   <!-- Navbar -->
-  <nav class="navbar fixed-top navbar-expand-lg navbar-light teal darken-4 scrolling-navbar">
+  <nav class="navbar fixed-top navbar-expand-lg navbar-dark teal darken-4 scrolling-navbar">
     <div class="container">
       <a class="navbar-brand" routerLink="">
         <img src="../assets/img/icon.png" style="width:40px">
@@ -10,20 +10,21 @@
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <div class="collapse navbar-collapse nav-collapse" id="navbarSupportedContent">
         <!-- Left -->
         <ul class="navbar-nav mr-auto">
+          <!--data-toggle="collapse" data-target=".nav-collapse" makes navbar automatically hide on mobile-->
           <li class="nav-item" routerLinkActive="active">
-            <a class="nav-link waves-effect text-white" routerLink="home">Home</a>
+            <a class="nav-link waves-effect text-white" data-toggle="collapse" data-target=".nav-collapse" routerLink="home">Home</a>
           </li>
           <li class="nav-item" routerLinkActive="active">
-            <a class="nav-link waves-effect text-white" routerLink="videos">Videos</a>
+            <a class="nav-link waves-effect text-white" data-toggle="collapse" data-target=".nav-collapse" routerLink="videos">Videos</a>
           </li>
           <li class="nav-item" routerLinkActive="active">
-            <a class="nav-link waves-effect text-white" routerLink="projects">Projects</a>
+            <a class="nav-link waves-effect text-white" data-toggle="collapse" data-target=".nav-collapse" routerLink="projects">Projects</a>
           </li>
           <li class="nav-item" routerLinkActive="active">
-            <a class="nav-link waves-effect text-white" routerLink="android">Android</a>
+            <a class="nav-link waves-effect text-white" data-toggle="collapse" data-target=".nav-collapse" routerLink="android">Android</a>
           </li>
         </ul>
 
@@ -51,14 +52,17 @@
 </header>
 
 <!-- Main layout -->
-<main class="mt-5 pt-5">
+<main class="mt-5 pt-5 maincontent" id="main">
   <div class="container">
     <router-outlet></router-outlet>
   </div>
 </main>
 
+<!-- Takes care if there's not enough content for footer to stay at the bottom-->
+<div class="filler"></div>
+
 <!-- Footer -->
-<footer class="page-footer font-small blue-grey darken-2">
+<footer class="page-footer font-small blue-grey darken-2 bottom">
   <!-- Footer Elements -->
   <div class="container">
     <div class="row">
@@ -92,6 +96,6 @@
     </div>
   </div>
   <div class="footer-copyright text-center blue-grey darken-4 py-3">
-    Powered by MDBootstrap & GitHub Pages.
+    Powered by MDBootstrap, Angular & GitHub Pages.
   </div>
 </footer>
