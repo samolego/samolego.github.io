@@ -21,8 +21,9 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-
-    # Runs a single command using the runners shell
+    - name: Installing Angular
+      run: npm install -g @angular/cli
+      
     - name: npm install
       run: npm install
 
@@ -32,6 +33,7 @@ jobs:
     - name: Providing 404 page
       run: cp docs/index.html docs/404.html
     - name: Github Pages
+      if: success()
       uses: crazy-max/ghaction-github-pages@v1.4.0
       with:
         target_branch: master
