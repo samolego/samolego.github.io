@@ -5,6 +5,7 @@ import { CiComponent } from './projects/ci/ci.component';
 import { HomeComponent } from './home/home.component';
 import { VideosComponent } from './videos/videos.component';
 import { AndroidComponent } from './android/android.component';
+import { DonateComponent } from './donate/donate.component';
 
 const routes: Routes = [
   {
@@ -26,6 +27,10 @@ const routes: Routes = [
   {
     path: 'android',
     component: AndroidComponent
+  },
+  {
+    path: 'donate',
+    component: DonateComponent
   },
   {
     path: '',

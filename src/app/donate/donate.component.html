@@ -1,0 +1,41 @@
+<section class="wow fadeIn">
+    <strong>
+        Wow! You have considered donating?
+    </strong>
+</section>
+
+<hr class="my-5">
+
+<section class="wow fadeIn">
+    <div class="row flex-xl-nowrap mb-4 wow fadeIn p-2">
+        <strong>Thank you.</strong>
+    </div>
+    <div class="row flex-xl-nowrap mb-4 wow fadeIn p-2">
+        <div class="col-sm-7 col-xs-12">
+            <p>
+                I really appreciate it. You can send your donation to the following BTC address:
+            </p>
+            <div class="row border elegant-color-dark p-2 ml-2" style="width: fit-content;">
+                <span class="align-middle">
+                    <i class="fab fa-bitcoin mr-1 yellow-text"></i>
+                    <input class="md-form align-middle yellow-text" id="btcAddress" value="3G48MrV4zyXhKjBDk6rZvYnVx8rJcuz8va" style="background-color: #212121; border: 0px;"> 
+                </span>
+                <button type="button" class="btn btn-warning black-text ml-2" (click)="copyBtcAddress()">
+                    Copy<i class="far fa-clipboard ml-1"></i>
+                </button>
+            </div>
+            <div class="alert alert-success p-2 mt-2 ml-2" (click)="hideClipboardAlert()" role="alert" id="clipboardCopied" style="display: none; width: fit-content;">
+                Copied to clipboard!
+                <button type="button" class="btn btn-link ml-1 p-1" (click)="hideClipboardAlert()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-sm-5 col-xs-12">
+            <p>
+                Or scan the QR code if you will.<br>
+                <img src="../../assets/img/btc_address.png" class="m-2" style="width: fit-content;">
+            </p>
+        </div>
+    </div>
+</section>

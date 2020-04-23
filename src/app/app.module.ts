@@ -8,6 +8,7 @@ import { HomeComponent } from './home/home.component';
 import { AndroidComponent } from './android/android.component';
 import { VideosComponent } from './videos/videos.component';
 import { CiComponent } from './projects/ci/ci.component';
+import { DonateComponent } from './donate/donate.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { CiComponent } from './projects/ci/ci.component';
     HomeComponent,
     AndroidComponent,
     VideosComponent,
-    CiComponent
+    CiComponent,
+    DonateComponent
   ],
   imports: [
     BrowserModule,
