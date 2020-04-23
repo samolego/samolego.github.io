@@ -10,6 +10,37 @@
 
 <section class="text-center">
   <!--Repositories from GitHub-->
-  <div class="row mb-4 wow fadeIn" id="repos">
+  <div *ngIf="this.repos != null" class="row mb-4 wow fadeIn">
+    <div class="col-lg-4 col-sm-6 col-xs-12 mb-4" *ngFor="let repo of repos">
+      <a href="{{ repo.html_url }}" target="_blank">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title" style="color: black;">{{ repo.name }}</h4>
+            <license>
+              <span *ngIf="repo.license == null" class="badge blue-grey darken-4">No license detected</span>
+              <span *ngIf="repo.license != null" class="badge stylish-color-dark">License</span>
+              <span *ngIf="repo.license != null" class="badge lime darken-3 dark-text">{{ repo.license.spdx_id }}</span>
+            </license>
+            <issues>
+              <span class="badge special-color ml-1">Issues</span>
+              <span *ngIf="repo.open_issues_count == 0" class="badge unique-color">{{ repo.open_issues_count }}</span>
+              <span *ngIf="repo.open_issues_count != 0" class="badge red darken-1">{{ repo.open_issues_count }}</span>
+            </issues>
+            <stars>
+              <span class="badge grey darken-3 ml-1">Stars</span>
+              <span *ngIf="repo.stargazers_count == 0" class="badge green darken-4">{{ repo.stargazers_count }}</span>
+              <span *ngIf="repo.stargazers_count > 0" class="badge orange darken-4">{{ repo.stargazers_count }}</span>
+            </stars>
+            <lang>
+              <span *ngIf="repo.language == null" class="badge blue-grey darken-4 ml-1">Language not detected</span><br>
+              <span *ngIf="repo.language != null" class="badge blue-grey darken-2 ml-1">Language</span>
+              <span class="badge teal darken-1">{{ repo.language }}</span><br>
+            </lang>
+            <p *ngIf="repo.description == null" class="card-text mt-2">Description not provided.</p>
+            <p *ngIf="repo.description != null" class="card-text mt-2">{{ repo.description }}</p>
+          </div>
+        </div>
+      </a>
+    </div>
   </div>
 </section>
