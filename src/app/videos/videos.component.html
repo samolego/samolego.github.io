@@ -7,7 +7,20 @@
 <hr class="my-5">
 
 <section class="text-center">
-  <!--Repositories from GitHub-->
-  <div class="row mb-4 wow fadeIn" id="videos">
+  <div class="row mb-4 wow fadeIn">
+    <spinner *ngIf="this.videos == null" class="spinner-border green-text mx-auto" role="status">
+      <span class="sr-only">Loading...</span>
+    </spinner>
+  </div>
+  <div *ngIf="this.videos != null" class="row mb-4 wow fadeIn">
+    <div *ngFor="let video of videos" class="col-lg-4 col-md-12 mb-4">
+      <div class="card">
+        <div class="view overlay">
+          <a href="{{ video.link }}" target="_blank" data-toggle="tooltip" data-placement="right" title="{{ video.title }}">
+            <img src="{{ video.thumbnail }}" class="img-fluid" alt="{{ video.title }}">
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
 </section>  

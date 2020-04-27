@@ -57,7 +57,14 @@
                         <build-selected *ngIf="selectedBuild != null">
                             <div class="text-left">
                                 <div class="row">
-                                    <h3><b>Selected Build: {{ this.selectedBuild.run_number }}</b></h3>
+                                    <div class="col-lg-8 col-md-7 col-xs-12">
+                                        <h3><b>Selected Build: {{ this.selectedBuild.run_number }}</b></h3>
+                                    </div>
+                                    <div *ngIf="this.availableDownloads != null && this.selectedBuild.conclusion == 'success'" class="col-lg-4 col-md-5 col-xs-12">
+                                        <a *ngIf="this.selectedBuild.run_number > this.builds.total_count - this.availableDownloads.length" href="{{ this.downloadLink }}" style="color: white;">
+                                            <button type="button" class="btn light-green darken-4">Download Build<i class="fas fa-download m-1"></i></button>
+                                        </a>
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <h5 class="{{ getColor(this.selectedBuild.conclusion) }}-text">

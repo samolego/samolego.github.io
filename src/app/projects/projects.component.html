@@ -9,6 +9,11 @@
 <hr class="my-5">
 
 <section class="text-center">
+  <div class="row mb-4 wow fadeIn">
+    <spinner *ngIf="this.repos == null" class="spinner-border green-text mx-auto" role="status">
+      <span class="sr-only">Loading...</span>
+    </spinner>
+  </div>
   <!--Repositories from GitHub-->
   <div *ngIf="this.repos != null" class="row mb-4 wow fadeIn">
     <div class="col-lg-4 col-sm-6 col-xs-12 mb-4" *ngFor="let repo of repos">
