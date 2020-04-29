@@ -8,6 +8,7 @@ import { HttpClientJsonpModule, HttpClient } from '@angular/common/http';
   styleUrls: ['./ci.component.scss']
 })
 export class CiComponent implements OnInit {
+  url;
   repos;
   projectName;
   builds;
@@ -16,6 +17,7 @@ export class CiComponent implements OnInit {
   steps;
   availableDownloads;
   downloadLink;
+  urlParams;
 
 	constructor(private http: HttpClient) {
     this.http.jsonp('https://api.github.com/users/samolego/repos', 'callback').subscribe(data => {
@@ -25,12 +27,16 @@ export class CiComponent implements OnInit {
   
 
   ngOnInit(): void {
-    let urlParams = new URLSearchParams(window.location.search);
-    var project = urlParams.get("project");
+    this.url = location.origin + location.pathname + "?";
+    // Getting URL parameters
+    this.urlParams = new URLSearchParams(location.search.substring(1));
+    var project = this.urlParams.get("project");
     if(project != null)
+      // Selecting project if requested by parameters
       this.loadProjectBuilds(project);
   }
 
+  // Gets the color for the html components, depending on the result
   getColor(result) {
     if(result == "success")
       return "green";
@@ -39,54 +45,75 @@ export class CiComponent implements OnInit {
     return "light";
   }
 
+  // Sets the data for the "side window" with project builds
   loadProjectBuilds(repoName) {
+    // Nulling the previous project data
     this.workflowRuns = null;
     this.builds = null;
     this.selectedBuild = null;
     this.steps = null;
     this.availableDownloads = null
 
-    var urlParams = new URLSearchParams(window.location.search);
-
     this.projectName = repoName;
     const baseUrl = "https://api.github.com/repos/samolego/" + this.projectName;
 
+    // Setting URL parameters
+    this.urlParams.set("project", this.projectName);
+    history.replaceState(null, "CI for " + this.projectName, this.url + decodeURIComponent(this.urlParams));
+
+    // Requesting GH runs of project
     this.http.jsonp(baseUrl + '/actions/runs', 'callback').subscribe(data => {
       this.builds = data["data"];
       this.workflowRuns = this.builds.workflow_runs;
-      if(urlParams.has("build"))
-        this.loadBuild(urlParams.get("build"));
+
+      // If build is selected with URL parameters, this gets it
+      if(this.urlParams.has("build"))
+        this.loadBuild(this.urlParams.get("build"));
     });
 
+    // Getting downloads if they are available
     this.http.jsonp(baseUrl + '/contents?ref=dev-builds', 'callback').subscribe(data => {
       this.availableDownloads = data["data"];
     });
   }
 
+  // Sets the data needed for choosed build
   loadBuild(buildNumber) {
     this.steps = null;
     let count = this.builds["total_count"];
     if(count == null)
       return;
 
+    // Checks which build should be selected from JSON array
+    // we got from loadProjectBuilds()
     var which;
     if(buildNumber == "latest") 
       which = 0;
     else
       which = count - buildNumber
+
+    // Setting selected build from array
     this.selectedBuild = this.builds["workflow_runs"][ which ];
-    
+
+    // Setting URL parameters
+    this.urlParams.set("build", this.selectedBuild.run_number);
+    history.replaceState(null, "CI for " + this.projectName, this.url + decodeURIComponent(this.urlParams));
+
+    // Requesting build data
     this.http.jsonp(this.selectedBuild.jobs_url, 'callback').subscribe(data => {
+      // Checks for steps to show in "console" div
       try {
         this.steps = data["data"]["jobs"][0]["steps"];
       } catch {
         this.steps = null;
       }
     });
+
+    // Setting download link of build if it exists
     if(this.availableDownloads != null) {
       let downloadCount = this.availableDownloads.length - 1;
-      let dlNum = downloadCount - which;
-      if(dlNum > 0)
+      var dlNum = downloadCount - which;
+      if(dlNum >= 0)
         this.downloadLink = this.availableDownloads[ dlNum ]["download_url"];
     }
   }
