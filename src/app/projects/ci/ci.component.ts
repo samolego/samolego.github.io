@@ -69,9 +69,11 @@ export class CiComponent implements OnInit {
       // If build is selected with URL parameters, this gets it
       if(this.urlParams.has("build")) {
         var build = this.urlParams.get("build");
+
         if(build == "latest") 
-          build = 0;
-        this.loadBuild(this.builds["total_count"] - build);
+          this.loadBuild(0);
+        else
+          this.loadBuild(this.builds["total_count"] - build);
       }
     });
 
