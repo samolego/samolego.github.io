@@ -21,7 +21,7 @@ export class CiComponent implements OnInit {
 
 	constructor(private http: HttpClient) {
     this.http.jsonp('https://api.github.com/users/samolego/repos', 'callback').subscribe(data => {
-     this.repos = data["data"];
+      this.repos = data["data"];
     });
   }
   
@@ -67,8 +67,12 @@ export class CiComponent implements OnInit {
       this.workflowRuns = this.builds.workflow_runs;
 
       // If build is selected with URL parameters, this gets it
-      if(this.urlParams.has("build"))
-        this.loadBuild(this.urlParams.get("build"));
+      if(this.urlParams.has("build")) {
+        var build = this.urlParams.get("build");
+        if(build == "latest") 
+          build = 0;
+        this.loadBuild(this.builds["total_count"] - build);
+      }
     });
 
     // Getting downloads if they are available
@@ -80,23 +84,23 @@ export class CiComponent implements OnInit {
   // Sets the data needed for choosed build
   loadBuild(buildNumber) {
     this.steps = null;
+    this.downloadLink = null;
     let count = this.builds["total_count"];
+
     if(count == null)
       return;
 
     // Checks which build should be selected from JSON array
     // we got from loadProjectBuilds()
-    var which;
-    if(buildNumber == "latest") 
-      which = 0;
-    else
-      which = count - buildNumber
 
     // Setting selected build from array
-    this.selectedBuild = this.builds["workflow_runs"][ which ];
+    this.selectedBuild = this.workflowRuns[ buildNumber ];
+    if(this.selectedBuild == null)
+      return;
+    this.selectedBuild["build_number"] = count - buildNumber;
 
     // Setting URL parameters
-    this.urlParams.set("build", this.selectedBuild.run_number);
+    this.urlParams.set("build", count - buildNumber);
     history.replaceState(null, "CI for " + this.projectName, this.url + decodeURIComponent(this.urlParams));
 
     // Requesting build data
@@ -111,10 +115,9 @@ export class CiComponent implements OnInit {
 
     // Setting download link of build if it exists
     if(this.availableDownloads != null) {
-      let downloadCount = this.availableDownloads.length - 1;
-      var dlNum = downloadCount - which;
-      if(dlNum >= 0)
-        this.downloadLink = this.availableDownloads[ dlNum ]["download_url"];
+      let downloadCount = this.availableDownloads.length;
+      if(downloadCount > buildNumber)
+        this.downloadLink = this.availableDownloads[ buildNumber ]["download_url"];
     }
   }
 }

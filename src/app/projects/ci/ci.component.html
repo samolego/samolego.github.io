@@ -25,10 +25,10 @@
                         <span class="sr-only">Loading...</span>
                     </spinner>
                     <div *ngIf="workflowRuns != null && workflowRuns['total_count'] != 0" class="p-4 border lime lighten-5">
-                        <loop-builds *ngFor="let workflowRun of workflowRuns">
+                        <loop-builds *ngFor="let workflowRun of workflowRuns; index as i">
                             <div class="mb-4 active bd-sidenav-active">
-                                <button class="btn btn-{{ getColor(workflowRun.conclusion) }}" (click)='loadBuild(workflowRun.run_number)'>
-                                    Build#{{ workflowRun.run_number }}
+                                <button class="btn btn-{{ getColor(workflowRun.conclusion) }}" (click)='loadBuild(i)'>
+                                    Build#{{ this.builds.total_count - i }}
                                 </button>
                             </div>
                         </loop-builds>
@@ -58,10 +58,10 @@
                             <div class="text-left">
                                 <div class="row">
                                     <div class="col-lg-8 col-md-7 col-xs-12">
-                                        <h3><b>Selected Build: {{ this.selectedBuild.run_number }}</b></h3>
+                                        <h3><b>Selected Build: {{ this.selectedBuild.build_number }}</b></h3>
                                     </div>
-                                    <div *ngIf="this.availableDownloads != null && this.selectedBuild.conclusion == 'success'" class="col-lg-4 col-md-5 col-xs-12">
-                                        <a *ngIf="this.selectedBuild.run_number > this.builds.total_count - this.availableDownloads.length" href="{{ this.downloadLink }}" style="color: white;">
+                                    <div *ngIf="this.downloadLink != null && this.selectedBuild.conclusion == 'success'" class="col-lg-4 col-md-5 col-xs-12">
+                                        <a href="{{ this.downloadLink }}" style="color: white;">
                                             <button type="button" class="btn light-green darken-4">Download Build<i class="fas fa-download m-1"></i></button>
                                         </a>
                                     </div>
