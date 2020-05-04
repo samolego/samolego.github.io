@@ -11,9 +11,9 @@
         <strong>Thank you.</strong>
     </div>
     <div class="row flex-xl-nowrap mb-4 wow fadeIn p-2">
-        <div class="col-sm-7 col-xs-12">
+        <div class="col-md-6 col-sm-12">
             <p>
-                I really appreciate it. You can send your donation to the following BTC address:
+                I really appreciate it. You can send your donation to the following BTC<i class="fab fa-bitcoin"></i> address:
             </p>
             <div class="row border elegant-color-dark p-2 ml-2" style="width: fit-content;">
                 <span class="align-middle">
@@ -31,11 +31,22 @@
                 </button>
             </div>
         </div>
-        <div class="col-sm-5 col-xs-12">
+        <div class="col-md-4 col-sm-12">
             <p>
-                Or scan the QR code if you will.<br>
+                QR code for BTC donations:<br>
                 <img src="../../assets/img/btc_address.png" class="m-2" style="width: fit-content;">
             </p>
+        </div>
+        <div class="col-md-2 col-sm-12">
+            <p>
+                Or use PayPal<i class="fab fa-paypal m-1"></i> instead:
+            </p>
+            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                <input type="hidden" name="cmd" value="_s-xclick" />
+                <input type="hidden" name="hosted_button_id" value="W8NZ8FJQDX4SY" />
+                <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                <img alt="" src="https://www.paypal.com/en_SI/i/scr/pixel.gif" width="1" height="1" />
+            </form>
         </div>
     </div>
 </section>
