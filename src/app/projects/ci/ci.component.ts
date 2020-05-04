@@ -119,7 +119,8 @@ export class CiComponent implements OnInit {
     if(this.availableDownloads != null) {
       let downloadCount = this.availableDownloads.length;
       if(downloadCount > buildNumber)
-        this.downloadLink = this.availableDownloads[ buildNumber ]["download_url"];
+        // - 1 since we use .length method above
+        this.downloadLink = this.availableDownloads[ downloadCount - 1 - buildNumber ]["download_url"];
     }
   }
 }
