@@ -24,7 +24,7 @@
                     <spinner *ngIf="projectName == null" class="spinner-border text-info mx-auto" role="status">
                         <span class="sr-only">Loading...</span>
                     </spinner>
-                    <div *ngIf="workflowRuns != null && workflowRuns['total_count'] != 0" class="p-4 border lime lighten-5">
+                    <div *ngIf="workflowRuns != null && workflowRuns['total_count'] != 0" class="p-4 border lime lighten-5 scroller">
                         <loop-builds *ngFor="let workflowRun of workflowRuns; index as i">
                             <div class="mb-4 active bd-sidenav-active">
                                 <button class="btn btn-{{ getColor(workflowRun.conclusion) }}" (click)='loadBuild(i)'>
