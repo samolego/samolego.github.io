@@ -7,18 +7,45 @@
 <hr class="my-5">
 
 <section class="text-center">
-  <div class="row mb-4 wow fadeIn">
-    <spinner *ngIf="this.videos == null" class="spinner-border green-text mx-auto" role="status">
+  <div *ngIf="this.videos == null" class="row mb-4 wow fadeIn">
+    <spinner class="spinner-border green-text mx-auto" role="status">
       <span class="sr-only">Loading...</span>
     </spinner>
   </div>
+  <div *ngIf="this.selectedVideo != null">
+    <div class="border grey lighten-5 p-3">
+      <div class="row d-flex justify-content-end p-2">
+          <button type="button" class="btn grey lighten-3 p-2" (click)="this.selectedVideo = null;">
+              <i class="fas fa-times"></i>
+          </button>
+      </div>
+      <div class="row mb-4 wow fadeIn">
+        <div *ngIf="this.selectedVideo == 'empty'" class="mx-auto">
+          <spinner class="spinner-border green-text mx-auto" role="status">
+            <span class="sr-only">Loading...</span>
+          </spinner>
+        </div>
+        <div class="col-md-5" *ngIf="this.selectedVideo != 'empty'">
+          <div class="embed-responsive embed-responsive-16by9">
+            <iframe class="embed-responsive-item" [src]="getSafeUrl('https://youtube.com/embed/' + this.selectedVideo.videoId)" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>
+              Iframes don't seem to be supported by your browser :(
+            </iframe>
+          </div>
+        </div>
+        <div class="col-md-7 text-left">
+          <h2>{{ this.selectedVideo.title }}</h2>
+          <p [innerHTML]='this.selectedVideo.descriptionHtml'></p>
+        </div>
+      </div>
+    </div>
+    <hr class="my-5">
+  </div>
   <div *ngIf="this.videos != null" class="row mb-4 wow fadeIn">
-    <div *ngFor="let video of videos" class="col-lg-4 col-md-12 mb-4">
+    <div *ngFor="let video of videos | slice:0:9; let i = index" class="col-md-4 col-sm-6 mb-4">
       <div class="card">
-        <div class="view overlay">
-          <a href="{{ video.link }}" target="_blank" data-toggle="tooltip" data-placement="right" title="{{ video.title }}">
-            <img src="{{ video.thumbnail }}" class="img-fluid" alt="{{ video.title }}">
-          </a>
+        <div class="text-center" data-toggle="tooltip" data-placement="right" title="{{ video.title }}" (click)="selectVideo(video.videoId)">
+          <img src="{{ video.videoThumbnails[4].url }}" class="img-fluid" alt="{{ video.title }}">
+          <p>{{ video.title }}</p>
         </div>
       </div>
     </div>
