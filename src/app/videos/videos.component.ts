@@ -39,6 +39,7 @@ export class VideosComponent implements OnInit {
 
   selectVideo(videoId) {
     this.selectedVideo = "empty";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     this.http.get("https://invidio.us/api/v1/videos/" + videoId).subscribe(data => {
       this.selectedVideo = data;
     });
