@@ -15,9 +15,51 @@
     </spinner>
   </div>
   <!--Repositories from GitHub-->
-  <div *ngIf="this.repos != null" class="row mb-4 wow fadeIn">
-    <div class="col-lg-4 col-sm-6 col-xs-12 mb-4" *ngFor="let repo of repos">
-      <a href="{{ repo.html_url }}" target="_blank">
+  <div *ngIf="this.repos != null" class="row mb-4 wow fadeIn text-left">
+    <div class="col-lg-6 col-md-12 mb-4" *ngFor="let repo of repos">
+      
+      <h4>
+        <a href="{{ repo.html_url }}" target="_blank" style="color: #0097a7;">
+          <i class="fas fa-book mr-2"></i>{{ repo.name }}
+        </a>
+      </h4>
+      <div [ngSwitch]="repo.description">
+        <p>
+          <span *ngSwitchCase="null" class="mt-2">
+            Description not provided.<br>
+          </span>
+          <span *ngSwitchDefault class="mt-2">
+            {{ repo.description }}<br>
+          </span>
+          <a *ngIf="repo.homepage != null && repo.homepage != ''" href="{{ repo.homepage }}" target="_blank">
+            Visit project site
+          </a>
+        </p>
+      </div>
+
+      <div class="row mt-4">
+        <div class="ml-3" [ngSwitch]="repo.language">
+          <p *ngSwitchCase="null" class="grey-text mt-2">Language not detected.</p>
+          <p *ngSwitchDefault class="mt-2" [ngStyle]="{'color': getLanguageColor(repo.language) }">
+            <i class="fas fa-circle mr-1"></i>{{ repo.language }}
+          </p>
+        </div>
+        <div class="ml-3 mt-2" *ngIf="repo.stargazers_count != 0">
+          <p>{{ repo.stargazers_count }}<i class="fas fa-star ml-1"></i></p>
+        </div>
+        <div class="ml-3 mt-2" *ngIf="repo.forks_count != 0">
+          <p>{{ repo.forks_count }}<i class="fas fa-code-branch ml-1"></i></p>
+        </div>
+        <div class="ml-3" [ngSwitch]="repo.license">
+          <p *ngSwitchCase="null" class="grey-text mt-2">No license detected.</p>
+          <p *ngSwitchDefault class="green-text mt-2">
+            <i class="fas fa-balance-scale mr-1"></i>{{ repo.license.name }}
+          </p>
+        </div>
+      </div>
+
+      <hr>
+      <!--a href="{{ repo.html_url }}" target="_blank">
         <div class="card">
           <div class="card-body">
             <h4 class="card-title" style="color: black;">{{ repo.name }}</h4>
@@ -45,7 +87,7 @@
             <p *ngIf="repo.description != null" class="card-text mt-2">{{ repo.description }}</p>
           </div>
         </div>
-      </a>
+      </a-->
     </div>
   </div>
 </section>
