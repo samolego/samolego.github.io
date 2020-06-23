@@ -16,7 +16,7 @@
                     </button>
                 </div>
             </li>
-          <li *ngIf="this.projectName != null" [ngClass]="{'active': this.projectName != null && this.selectedBuild == null}" class="breadcrumb-item">
+          <li *ngIf="this.projectName != null" [ngClass]="{'active': this.projectName != null && this.selectedBuild == null}" class="breadcrumb-item" [routerLink]="['/projects/ci', this.projectName]">
             <a (click)="deselectBuilds()">
                 {{ this.projectName }}
             </a>
@@ -58,7 +58,7 @@
                             Build#{{ this.builds.total_count - i }}
                         </button>
                     </div-->
-                    <a *ngFor="let workflowRun of workflowRuns; index as i" class="{{ getColor(workflowRun.conclusion) }}-text" [ngSwitch]="workflowRun.conclusion" (click)='loadBuild(i)'>
+                    <a *ngFor="let workflowRun of workflowRuns; index as i" class="{{ getColor(workflowRun.conclusion) }}-text" [ngSwitch]="workflowRun.conclusion" [routerLink]="['/projects/ci', this.projectName, this.builds.total_count - i]" (click)='loadBuild(i)'>
 
                         <div class="p-2 mt-1">
                             <span style="float: left">

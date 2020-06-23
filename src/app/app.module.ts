@@ -25,7 +25,7 @@ import { DonateComponent } from './donate/donate.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientJsonpModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   schemas: [ NO_ERRORS_SCHEMA ],
   providers: [],

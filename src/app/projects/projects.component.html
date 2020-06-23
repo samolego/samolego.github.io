@@ -31,6 +31,9 @@
           <span *ngSwitchDefault class="mt-2">
             {{ repo.description }}<br>
           </span>
+          <a [routerLink]="['/projects/ci', repo.name]">
+            Go to CI
+          </a><br>
           <a *ngIf="repo.homepage != null && repo.homepage != ''" href="{{ repo.homepage }}" target="_blank">
             Visit project site
           </a>

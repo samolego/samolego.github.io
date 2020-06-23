@@ -21,6 +21,14 @@ const routes: Routes = [
     component: CiComponent
   },
   {
+    path: 'projects/ci/:project',
+    component: CiComponent
+  },
+  {
+    path: 'projects/ci/:project/:build',
+    component: CiComponent
+  },
+  {
     path: 'videos',
     component: VideosComponent
   },

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClientJsonpModule, HttpClient } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -21,7 +22,7 @@ export class CiComponent implements OnInit {
   showConsoleLog: boolean = false;
   dev: boolean = false;
 
-	constructor(private http: HttpClient) {
+	constructor(private http: HttpClient, private route: ActivatedRoute) {
     if(this.dev) {
       this.repos = [];
     }
@@ -33,13 +34,12 @@ export class CiComponent implements OnInit {
   
 
   ngOnInit(): void {
+    
     this.url = location.origin + location.pathname + "?";
     // Getting URL parameters
-    this.urlParams = new URLSearchParams(location.search.substring(1));
-    var project = this.urlParams.get("project");
-    if(project != null)
-      // Selecting project if requested by parameters
-      this.loadProjectBuilds(project);
+    this.route.params.subscribe(params => {
+        this.loadProjectBuilds(params['project']);
+    }); 
   }
 
   // Gets the color for the html components, depending on the result
@@ -80,10 +80,6 @@ export class CiComponent implements OnInit {
     this.projectName = repoName;
     const baseUrl = "https://api.github.com/repos/samolego/" + this.projectName;
 
-    // Setting URL parameters
-    this.urlParams.set("project", this.projectName);
-    history.replaceState(null, "CI for " + this.projectName, this.url + decodeURIComponent(this.urlParams));
-
     // Requesting GH runs of project
     if(this.dev) {
       this.builds = {};
@@ -95,14 +91,15 @@ export class CiComponent implements OnInit {
         this.workflowRuns = this.builds.workflow_runs;
 
         // If build is selected with URL parameters, this gets it
-        if(this.urlParams.has("build")) {
-          var build = this.urlParams.get("build");
+        this.route.params.subscribe(params => {
+          var build = params["build"];
 
           if(build == "latest") 
             this.loadBuild(0);
-          else
+          else if(build != undefined)
             this.loadBuild(this.builds["total_count"] - build);
-        }
+            
+        });
       });
 
     if(this.dev) {
@@ -134,8 +131,9 @@ export class CiComponent implements OnInit {
     this.selectedBuild["build_number"] = count - buildNumber;
 
     // Setting URL parameters
-    this.urlParams.set("build", count - buildNumber);
-    history.replaceState(null, "CI for " + this.projectName, this.url + decodeURIComponent(this.urlParams));
+    
+    //this.urlParams.set("build", count - buildNumber);
+    //history.replaceState(null, "CI for " + this.projectName, this.url + decodeURIComponent(this.urlParams));
 
     if(this.dev) {
       this.steps = [];
@@ -152,7 +150,11 @@ export class CiComponent implements OnInit {
       });
 
     // Scrolling to the project data
-    window.scrollTo(0, document.getElementById("projectTitle").offsetWidth);
+    try {
+      window.scrollTo(0, document.getElementById("projectTitle").offsetWidth);
+    } catch (error) {
+      // couldn't scroll
+    }
 
     // Setting download link of build if it exists
     if(this.availableDownloads != null) {
