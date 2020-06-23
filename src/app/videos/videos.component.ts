@@ -30,7 +30,11 @@ export class VideosComponent implements OnInit {
 
     this.http.get("https://invidio.us/api/v1/channels/UCtPiCXgdX4A3UCk-2oYZITw").subscribe(data => {
       this.videos = data["latestVideos"];
-    });
+    },
+    error => {
+      this.videos = "";
+    }
+    );
   }
 
   getSafeUrl(url) {
@@ -40,8 +44,14 @@ export class VideosComponent implements OnInit {
   selectVideo(videoId) {
     this.selectedVideo = "empty";
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    this.http.get("https://invidio.us/api/v1/videos/" + videoId).subscribe(data => {
-      this.selectedVideo = data;
-    });
+
+    this.http.get("https://invidio.us/api/v1/videos/" + videoId).subscribe(
+      data => {
+        this.selectedVideo = data;
+      },
+      error => {
+        this.selectedVideo = {"error": error, "videoId": videoId}
+      }
+    );
   }
 }
