@@ -6,6 +6,7 @@ import { HomeComponent } from './home/home.component';
 import { VideosComponent } from './videos/videos.component';
 import { AndroidComponent } from './android/android.component';
 import { DonateComponent } from './donate/donate.component';
+import { E404Component } from './e404/e404.component';
 
 const routes: Routes = [
   {
@@ -44,6 +45,10 @@ const routes: Routes = [
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'
+  },
+  {
+    path: '**',
+    component: E404Component
   }
 ];
 

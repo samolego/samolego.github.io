@@ -10,6 +10,7 @@ import { AndroidComponent } from './android/android.component';
 import { VideosComponent } from './videos/videos.component';
 import { CiComponent } from './projects/ci/ci.component';
 import { DonateComponent } from './donate/donate.component';
+import { E404Component } from './e404/e404.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { DonateComponent } from './donate/donate.component';
     AndroidComponent,
     VideosComponent,
     CiComponent,
-    DonateComponent
+    DonateComponent,
+    E404Component
   ],
   imports: [
     BrowserModule,

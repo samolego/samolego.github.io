@@ -130,11 +130,6 @@ export class CiComponent implements OnInit {
       return;
     this.selectedBuild["build_number"] = count - buildNumber;
 
-    // Setting URL parameters
-    
-    //this.urlParams.set("build", count - buildNumber);
-    //history.replaceState(null, "CI for " + this.projectName, this.url + decodeURIComponent(this.urlParams));
-
     if(this.dev) {
       this.steps = [];
     }
