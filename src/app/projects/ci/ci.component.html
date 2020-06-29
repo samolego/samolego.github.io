@@ -132,7 +132,7 @@
                                             <div class="custom-control custom-switch">
                                                 <span style="float: left"><b><i class="fas fa-terminal ml-1 mr-1"></i>Console Log</b></span>
                                                 <span style="float: right">
-                                                    <input type="checkbox" class="custom-control-input" id="consoleLogSwitch" (change)="showConsoleLog = !showConsoleLog;">
+                                                    <input type="checkbox" class="custom-control-input" id="consoleLogSwitch" (change)="showConsoleLog = !showConsoleLog;" [checked]="showConsoleLog">
                                                     <label class="custom-control-label" for="consoleLogSwitch">Show</label>
                                                 </span>
                                             </div>
