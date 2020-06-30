@@ -11,29 +11,37 @@ import { exit } from 'process';
 export class AppComponent implements OnInit {
   cookiesEnabled: boolean = false;
   hideConsole: boolean = false;
+  sudoMode: boolean = false;
+
+  // Most of the commands (sudo and su are not listed since user is not trusted :D)
   cmds = [
-    "help",
-    "?",
-    "y",
-    "yes",
-    "n",
-    "no",
-    "hide",
-    "clear",
-    "cd",
-    "ls",
-    "pwd",
-    "kill",
-    "htop",
-    "ping",
-    "rm",
-    "exit"
+    "help", // 0
+    "?", // 1
+    "y", // 2
+    "yes", // 3
+    "n", // 4
+    "no", // 5
+    "hide", // 6
+    "clear", // 7
+    "cd", // 8
+    "ls", // 9
+    "pwd", // 10
+    "kill", // 11
+    "htop", // 12
+    "ping", // 13
+    "rm", // 14
+    "exit", // 15
+    "extend", // 16
+    "shrink" // 17
   ];
   consoleLines;
   consoleInput: HTMLInputElement;
   selectedCmd: number = -1;
   usedCmds = [];
   components;
+  consoleDiv: HTMLInputElement;
+
+  username = "cookies";
 
 	constructor(private router: Router, private route: ActivatedRoute) {
     this.cookiesEnabled = <boolean> <unknown> localStorage.getItem("cookiesEnabled");
@@ -70,10 +78,10 @@ export class AppComponent implements OnInit {
 
     // if enter was pressed
     if ((evt.keyCode == 13) && (node.type=="text"))  {
-      let consoleDiv = <HTMLInputElement> document.getElementById("consoleDiv");
+      this.consoleDiv = <HTMLInputElement> document.getElementById("consoleDiv");
       
       // Adding used command to console lines
-      this.consoleLines.append(this.newLine("~ root# " + this.consoleInput.value));
+      this.consoleLines.append(this.newLine("<span style='color:white;'>" + this.getUsername() + "</span>" + this.consoleInput.value));
 
       let c = this.consoleInput.value;
       if(c != "") {
@@ -84,7 +92,7 @@ export class AppComponent implements OnInit {
       this.selectedCmd = -1;
       this.consoleInput.value = null;
       // Scrolling to bottom of console
-      consoleDiv.scrollTop = consoleDiv.scrollHeight;
+      this.consoleDiv.scrollTop = this.consoleDiv.scrollHeight;
     }
 
     // Up arrow
@@ -110,6 +118,7 @@ export class AppComponent implements OnInit {
     }
   }
 
+  // Main snake of the console - command parser
   async proccessCommand(cmd): Promise<void> {
     // Switch for recognising commands
     switch(cmd[0]) {
@@ -124,12 +133,18 @@ export class AppComponent implements OnInit {
       case this.cmds[2]:
       case this.cmds[3]:
         // yes
-        this.toggleCookies(true);
+        if(this.username == "cookies")
+          this.toggleCookies(true);
+        else
+          this.consoleLines.append(this.newLine("This user doesn't have permission to toggle cookies."));
         break;
       case this.cmds[4]:
       case this.cmds[5]:
         // no
-        this.toggleCookies(false);
+        if(this.username == "cookies")
+          this.toggleCookies(false);
+        else
+          this.consoleLines.append(this.newLine("This user doesn't have permission to toggle cookies."));
         break;
       case this.cmds[6]:
         // hide
@@ -182,6 +197,10 @@ export class AppComponent implements OnInit {
         break;
       case this.cmds[14]:
         // rm
+        if(!this.sudoMode) {
+          this.consoleLines.append(this.newLine("Permission denied."));
+          return;
+        }
         try {
           if(cmd[2].endsWith("/"))
           cmd[2] = cmd[2].slice(0, -1);
@@ -210,8 +229,55 @@ export class AppComponent implements OnInit {
               element.path = "";
               return;
             }
+            console.log(element.path);
           });
         }
+        break;
+      case "sudo":
+        // Running with sudo privilegies
+        this.sudoMode = true;
+        if(cmd[1] == "" || cmd[1] == null) {
+          this.consoleLines.append(this.newLine("\"sudo\" requires a command after it."));
+          return;
+        }
+        cmd.shift();
+
+        // We should warn the user about sudo being used
+        this.consoleLines.append(this.newLine("<span style='color: #ff0f0f'>Warning! superuser mode used!</span>"));
+        this.consoleLines.append(this.newLine("<span style='color: #ffea00'>Great power comes with great responsibility.</span>"));
+        
+        // Parsing the rest of the command
+        await this.proccessCommand(cmd);
+
+        // Disabling superuser
+        this.sudoMode = false;
+        break;
+      case "su":
+        // su - switching user
+        if(cmd[1] == "" || cmd[1] == null) {
+          this.username = "root";
+        }
+        else if(cmd[1] == "-" && cmd[2] != "" && cmd[2] != null) {
+          this.username = cmd[2];
+        }
+        else
+          this.consoleLines.append(this.newLine("Usage: <br> su - \"username\""));
+        if(this.username == "root") {
+          this.sudoMode = true;
+          this.consoleLines.append(this.newLine("<span style='color: #ff0f0f'>Warning! Superuser mode active!</span>"));
+        }
+        else
+          this.sudoMode = false;
+        break;
+      case this.cmds[16]:
+        // Extend
+        this.consoleDiv.style.height = (window.innerHeight - 20).toString() + "px";
+        this.consoleLines.append(this.newLine("Using extended mode."));
+        break;
+      case this.cmds[17]:
+        // shrink
+        this.consoleDiv.style.height = "155px";
+        this.consoleLines.append(this.newLine("Using shrinked mode."));
         break;
       case "":
         // Enter
@@ -226,6 +292,12 @@ export class AppComponent implements OnInit {
     let response = document.createElement("span");
     response.innerHTML = command + "<br>";
     return response;
+  }
+
+  getUsername() {
+    if(this.sudoMode)
+      return this.username + "@samolego:~ # ";
+    return this.username + "@samolego:~ $ ";
   }
   
   toggleCookies(enable: boolean) {

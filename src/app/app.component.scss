@@ -12,8 +12,14 @@
 .console {
     height: 155px;
     overflow: auto;
-    caret-color: white;
+    background-color: black;
+    
 }
+.console-text {
+    caret-color: rgb(0, 255, 0);
+    color: rgb(0, 255, 0);
+}
+
 ::-webkit-scrollbar {
     width: 6px;
 }
