@@ -59,6 +59,28 @@
   <div class="container">
     <router-outlet></router-outlet>
   </div>
+  <!-- Cookie console -->
+  <!-- This idea was shamelessly taken from JetBrains website -->
+  <div [ngStyle]="{'display': this.cookiesEnabled || this.hideConsole ? 'none' : ''}" class="console" (click)="this.consoleInput.focus();">
+    <div class="black fixed-bottom m-2 p-2 text-monospace white-text console" id="consoleDiv">
+      <p id="consoleText">
+        Cookies allow to cache some API requests and save your data.<br>
+        Do you allow cookie usage?<br>
+        <a class="text-left" style="text-decoration: underline" (click)="toggleCookies(true)">
+          [Y]es
+        </a>
+        <a class="text-right" style="text-decoration: underline" (click)="toggleCookies(false)">
+          [N]o
+        </a>
+      </p>
+      
+      <div id="consoleLines">
+        <!-- Commands that were used and their feedback are put here -->
+      </div>
+      ~ root# <input #consoleInputText class="black text-white" style="border: 0; outline: none;" type='text' id="consoleInputText">
+    </div>
+  </div>
+  
 </main>
 
 <!-- Takes care if there's not enough content for footer to stay at the bottom-->
