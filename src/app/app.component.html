@@ -56,7 +56,7 @@
 
 <!-- Main layout -->
 <main class="mt-5 pt-5 maincontent" id="main">
-  <div class="container">
+  <div class="container" id="content">
     <router-outlet></router-outlet>
   </div>
   <!-- Cookie console -->
@@ -77,7 +77,7 @@
       <div id="consoleLines">
         <!-- Commands that were used and their feedback are put here -->
       </div>
-      ~ root# <input #consoleInputText class="black text-white" style="border: 0; outline: none;" type='text' id="consoleInputText">
+      ~ root# <input #consoleInputText autocomplete="off" class="black text-white" style="border: 0; outline: none;" type='text' id="consoleInputText">
     </div>
   </div>
   

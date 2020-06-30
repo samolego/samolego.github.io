@@ -22,17 +22,29 @@ export class AppComponent implements OnInit {
     "clear",
     "cd",
     "ls",
-    "pwd"
+    "pwd",
+    "kill",
+    "htop",
+    "ping",
+    "rm",
+    "exit"
   ];
   consoleLines;
   consoleInput: HTMLInputElement;
   selectedCmd: number = -1;
   usedCmds = [];
+  components;
 
 	constructor(private router: Router, private route: ActivatedRoute) {
     this.cookiesEnabled = <boolean> <unknown> localStorage.getItem("cookiesEnabled");
     if(this.cookiesEnabled == null)
       this.cookiesEnabled = false;
+    
+    // Setting available components
+    this.components = new Set();
+    this.router.config.forEach(element => {
+      this.components.add(element.path);
+    });
   }
   
   ngOnInit(): void {
@@ -64,10 +76,10 @@ export class AppComponent implements OnInit {
       this.consoleLines.append(this.newLine("~ root# " + this.consoleInput.value));
 
       let c = this.consoleInput.value;
-      if(c != "")
+      if(c != "") {
         this.usedCmds.unshift(c);
-      var cmd = c.toLowerCase().split(" ");
-      this.proccessCommand(cmd);
+        this.proccessCommand(c.toLowerCase().split(" "));
+      }
       
       this.selectedCmd = -1;
       this.consoleInput.value = null;
@@ -78,14 +90,11 @@ export class AppComponent implements OnInit {
     // Up arrow
     else if((evt.keyCode == 38) && (node.type=="text")) {
       this.selectedCmd++;
-      if(this.usedCmds[this.selectedCmd] != undefined) {
-        this.consoleInput.value = this.usedCmds[this.selectedCmd];      
-        console.log(this.usedCmds, " " + this.selectedCmd);
-      }
+      if(this.usedCmds[this.selectedCmd] != undefined)
+        this.consoleInput.value = this.usedCmds[this.selectedCmd];
       else {
         this.consoleInput.value = "";
         this.selectedCmd < this.usedCmds.length ? this.selectedCmd++: this.selectedCmd = this.usedCmds.length;
-        console.log(this.usedCmds, " " + this.selectedCmd);
       }
     }
 
@@ -97,7 +106,6 @@ export class AppComponent implements OnInit {
       else {
         this.consoleInput.value = "";
         this.selectedCmd > 0 ? this.selectedCmd--: this.selectedCmd = -1;
-        console.log(this.usedCmds, " " + this.selectedCmd);
       }
     }
   }
@@ -133,12 +141,22 @@ export class AppComponent implements OnInit {
         break;
       case this.cmds[8]:
         // cd
-        this.router.navigateByUrl(cmd[1]);
+        switch(cmd[1]) {
+          case "..":
+            this.router.navigateByUrl("/");
+            break;
+          case ".":
+            location.reload();
+            break;
+          default:
+            this.router.navigateByUrl(cmd[1]);
+            break;
+        }
         break;
       case this.cmds[9]:
         // ls
-        this.router.config.forEach(element => {
-          this.consoleLines.append(this.newLine(element.path));
+        this.components.forEach(element => {
+          this.consoleLines.append(this.newLine(element + "/"));
         });
         break;
       case this.cmds[10]:
@@ -146,6 +164,54 @@ export class AppComponent implements OnInit {
         this.route.params.subscribe(params => {
           this.consoleLines.append(this.newLine(this.router.url));
         });
+        break;
+      case this.cmds[11]:
+      case this.cmds[15]:
+        // kill || exit
+        var w = window.open("", "_self");
+        w.document.write("");
+        w.close();
+        break;
+      case this.cmds[12]:
+        // htop
+        this.consoleLines.append(this.htop());
+        break;
+      case this.cmds[13]:
+        // ping
+        this.consoleLines.append(this.newLine("pong"));
+        break;
+      case this.cmds[14]:
+        // rm
+        try {
+          if(cmd[2].endsWith("/"))
+          cmd[2] = cmd[2].slice(0, -1);
+        } catch(ignored) {
+          	// not enough args
+        }
+        // Checking if command is valid
+        if(cmd[1] == null || cmd[1] == "")
+          this.consoleLines.append(this.newLine("Invalid file or directory name."));
+        else if(!this.components.has(cmd[1]) && !this.components.has(cmd[2]))
+          this.consoleLines.append(this.newLine("File not found."));
+        else if(!cmd[1].startsWith("-r"))
+          this.consoleLines.append(this.newLine("Cannot remove " + cmd[1] + ". Is a directory."));
+        else {
+          this.consoleLines.append(this.newLine("Deleted " + cmd[2] + "."));
+          this.components.delete(cmd[2]);
+
+          if(this.router.url.includes(cmd[2])) {
+            // Page that user is on was deleted
+            this.router.navigateByUrl("/404");
+          }
+
+          // Disabling routing to deleted page
+          this.router.config.forEach(element => {
+            if(element.path == cmd[2]) {
+              element.path = "";
+              return;
+            }
+          });
+        }
         break;
       case "":
         // Enter
@@ -173,5 +239,10 @@ export class AppComponent implements OnInit {
       localStorage.removeItem("cookiesEnabled");
       this.cookiesEnabled = false;
     }
+  }
+
+  htop() {
+
+    return
   }
 }
