@@ -291,7 +291,7 @@ export class AppComponent implements OnInit {
     if(color != null)
       response.style.color = color;
     else
-      response.style.color = "#b2ffa8";
+      response.style.color = "#ccff33";
     response.innerHTML = command + "<br>";
     return response;
   }
