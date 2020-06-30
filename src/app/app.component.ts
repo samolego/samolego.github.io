@@ -81,8 +81,7 @@ export class AppComponent implements OnInit {
       this.consoleDiv = <HTMLInputElement> document.getElementById("consoleDiv");
       
       // Adding used command to console lines
-      this.consoleLines.append(this.newLine("<span style='color:white;'>" + this.getUsername() + "</span>" + this.consoleInput.value));
-
+      this.consoleLines.append(this.newLine("<span style='color:" + this.getUsernameColor() + ";'>" + this.getUsername() + "</span>" + this.consoleInput.value, "rgb(0, 255, 0)"));
       let c = this.consoleInput.value;
       if(c != "") {
         this.usedCmds.unshift(c);
@@ -124,11 +123,11 @@ export class AppComponent implements OnInit {
     switch(cmd[0]) {
       case this.cmds[0]:
       case this.cmds[1]:
-        this.consoleLines.append(this.newLine("Available commands:"));
+        this.consoleLines.append(this.newLine("Available commands:", null));
         this.cmds.forEach(element => {
           this.consoleLines.append(element + ", ");
         });
-        this.consoleLines.append(this.newLine(""));
+        this.consoleLines.append(this.newLine("", null));
         break;
       case this.cmds[2]:
       case this.cmds[3]:
@@ -136,7 +135,7 @@ export class AppComponent implements OnInit {
         if(this.username == "cookies")
           this.toggleCookies(true);
         else
-          this.consoleLines.append(this.newLine("This user doesn't have permission to toggle cookies."));
+          this.consoleLines.append(this.newLine("This user doesn't have permission to toggle cookies.", "red"));
         break;
       case this.cmds[4]:
       case this.cmds[5]:
@@ -144,7 +143,7 @@ export class AppComponent implements OnInit {
         if(this.username == "cookies")
           this.toggleCookies(false);
         else
-          this.consoleLines.append(this.newLine("This user doesn't have permission to toggle cookies."));
+          this.consoleLines.append(this.newLine("This user doesn't have permission to toggle cookies.", "red"));
         break;
       case this.cmds[6]:
         // hide
@@ -171,13 +170,13 @@ export class AppComponent implements OnInit {
       case this.cmds[9]:
         // ls
         this.components.forEach(element => {
-          this.consoleLines.append(this.newLine(element + "/"));
+          this.consoleLines.append(this.newLine(element + "/", null));
         });
         break;
       case this.cmds[10]:
         // pwd
         this.route.params.subscribe(params => {
-          this.consoleLines.append(this.newLine(this.router.url));
+          this.consoleLines.append(this.newLine(this.router.url, null));
         });
         break;
       case this.cmds[11]:
@@ -193,12 +192,12 @@ export class AppComponent implements OnInit {
         break;
       case this.cmds[13]:
         // ping
-        this.consoleLines.append(this.newLine("pong"));
+        this.consoleLines.append(this.newLine("pong", null));
         break;
       case this.cmds[14]:
         // rm
         if(!this.sudoMode) {
-          this.consoleLines.append(this.newLine("Permission denied."));
+          this.consoleLines.append(this.newLine("Permission denied.", "red"));
           return;
         }
         try {
@@ -209,13 +208,13 @@ export class AppComponent implements OnInit {
         }
         // Checking if command is valid
         if(cmd[1] == null || cmd[1] == "")
-          this.consoleLines.append(this.newLine("Invalid file or directory name."));
+          this.consoleLines.append(this.newLine("Invalid file or directory name.", null));
         else if(!this.components.has(cmd[1]) && !this.components.has(cmd[2]))
-          this.consoleLines.append(this.newLine("File not found."));
+          this.consoleLines.append(this.newLine("File not found.", null));
         else if(!cmd[1].startsWith("-r"))
-          this.consoleLines.append(this.newLine("Cannot remove " + cmd[1] + ". Is a directory."));
+          this.consoleLines.append(this.newLine("Cannot remove " + cmd[1] + ". Is a directory.", null));
         else {
-          this.consoleLines.append(this.newLine("Deleted " + cmd[2] + "."));
+          this.consoleLines.append(this.newLine("Deleted " + cmd[2] + ".", null));
           this.components.delete(cmd[2]);
 
           if(this.router.url.includes(cmd[2])) {
@@ -224,12 +223,11 @@ export class AppComponent implements OnInit {
           }
 
           // Disabling routing to deleted page
-          this.router.config.forEach(element => {
+          this.router.config.every((element) => {
             if(element.path == cmd[2]) {
               element.path = "";
-              return;
+              return false;
             }
-            console.log(element.path);
           });
         }
         break;
@@ -237,14 +235,14 @@ export class AppComponent implements OnInit {
         // Running with sudo privilegies
         this.sudoMode = true;
         if(cmd[1] == "" || cmd[1] == null) {
-          this.consoleLines.append(this.newLine("\"sudo\" requires a command after it."));
+          this.consoleLines.append(this.newLine("\"sudo\" requires a command after it.", null));
           return;
         }
         cmd.shift();
 
         // We should warn the user about sudo being used
-        this.consoleLines.append(this.newLine("<span style='color: #ff0f0f'>Warning! superuser mode used!</span>"));
-        this.consoleLines.append(this.newLine("<span style='color: #ffea00'>Great power comes with great responsibility.</span>"));
+        this.consoleLines.append(this.newLine("<span style='color: #ff0f0f'>Warning! superuser mode used!</span>", null));
+        this.consoleLines.append(this.newLine("<span style='color: #ffea00'>Great power comes with great responsibility.</span>", null));
         
         // Parsing the rest of the command
         await this.proccessCommand(cmd);
@@ -261,10 +259,10 @@ export class AppComponent implements OnInit {
           this.username = cmd[2];
         }
         else
-          this.consoleLines.append(this.newLine("Usage: <br> su - \"username\""));
+          this.consoleLines.append(this.newLine("Usage: <br> su - \"username\"", null));
         if(this.username == "root") {
           this.sudoMode = true;
-          this.consoleLines.append(this.newLine("<span style='color: #ff0f0f'>Warning! Superuser mode active!</span>"));
+          this.consoleLines.append(this.newLine("<span style='color: #ff0f0f'>Warning! Superuser mode active!</span>", null));
         }
         else
           this.sudoMode = false;
@@ -272,24 +270,28 @@ export class AppComponent implements OnInit {
       case this.cmds[16]:
         // Extend
         this.consoleDiv.style.height = (window.innerHeight - 20).toString() + "px";
-        this.consoleLines.append(this.newLine("Using extended mode."));
+        this.consoleLines.append(this.newLine("Using extended mode.", null));
         break;
       case this.cmds[17]:
         // shrink
         this.consoleDiv.style.height = "155px";
-        this.consoleLines.append(this.newLine("Using shrinked mode."));
+        this.consoleLines.append(this.newLine("Using shrinked mode.", null));
         break;
       case "":
         // Enter
         break;
       default:
-        this.consoleLines.append(this.newLine(cmd[0] + " is not a valid command. Type \"help\" or \"?\" for available commands."));
+        this.consoleLines.append(this.newLine(cmd[0] + " is not a valid command. Type \"help\" or \"?\" for available commands.", null));
         break;
     }
   }
 
-  newLine(command) {
+  newLine(command: string, color: string) {
     let response = document.createElement("span");
+    if(color != null)
+      response.style.color = color;
+    else
+      response.style.color = "#b2ffa8";
     response.innerHTML = command + "<br>";
     return response;
   }
@@ -299,15 +301,20 @@ export class AppComponent implements OnInit {
       return this.username + "@samolego:~ # ";
     return this.username + "@samolego:~ $ ";
   }
+  getUsernameColor() {
+    if(this.sudoMode)
+      return "#75ffa5";
+    return "white";
+  }
   
   toggleCookies(enable: boolean) {
     if(enable) {
-      this.consoleLines.append(this.newLine("Cookies are now enabled. Type \"hide\" to hide console."));
+      this.consoleLines.append(this.newLine("Cookies are now enabled. Type \"hide\" to hide console.", null));
       localStorage.setItem("cookiesEnabled", "true");
       this.cookiesEnabled = true;
     }
     else {
-      this.consoleLines.append(this.newLine("Cookies are disabled. Seems like you don't have a sweet tooth. If you want to hide the console, use \"hide\"."));
+      this.consoleLines.append(this.newLine("Cookies are disabled. Seems like you don't have a sweet tooth. If you want to hide the console, use \"hide\".", null));
       localStorage.removeItem("cookiesEnabled");
       this.cookiesEnabled = false;
     }

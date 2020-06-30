@@ -80,7 +80,8 @@
         <!-- Commands that were used and their feedback are put here -->
       </div>
       <p>
-        <span style="color:white;">{{ this.getUsername() }}</span><input #consoleInputText autocomplete="off" class="black console-text" style="border: 0; outline: none;" type='text' id="consoleInputText">
+      <span style="color: {{getUsernameColor()}}">{{ this.getUsername() }}</span>
+        <input #consoleInputText autocomplete="off" spellcheck="false" class="console-text" style="border: 0; outline: none; background-color: black;" type='text' id="consoleInputText">
       </p>
     </div>
   </div>
