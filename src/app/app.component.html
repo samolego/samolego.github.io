@@ -61,7 +61,7 @@
   </div>
   <!-- Cookie console -->
   <!-- This idea was shamelessly taken from JetBrains website -->
-  <div [ngStyle]="{'display': this.cookiesEnabled || this.hideConsole ? 'none' : ''}" class="console" (click)="this.consoleInput.focus();">
+  <div [ngStyle]="{'display': this.cookiesEnabled || this.hideConsole ? 'none' : ''}" (click)="this.consoleInput.focus();">
     <div class="fixed-bottom m-2 p-2 text-monospace console console-text" id="consoleDiv">
       <p id="consoleText">
         Cookies allow to cache some API requests and save your data.<br>
