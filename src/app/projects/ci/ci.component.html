@@ -2,15 +2,36 @@
     <strong>
         Developer builds
     </strong><br>
-    <button class="btn lime dropdown-toggle mr-4" [ngSwitch]="projectName" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <ngswitch *ngSwitchCase="null">Select Project</ngswitch>
-        <ngswitch *ngSwitchDefault>{{ projectName }}</ngswitch>
-    </button>
-    <div class="dropdown-menu" id="projectsSelector">
-        <button class="dropdown-item" *ngFor="let repo of repos" (click)='loadProjectBuilds(this.repo.name)'>
-            {{ repo.name }}
-        </button>
-    </div>
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb grey lighten-5">
+          <li [ngClass]="{'active': this.projectName == null}" class="breadcrumb-item">
+              <a (click)="deselectProject()">
+                  CI
+                </a>
+                <i class="fas fa-caret-right mx-2" aria-hidden="true" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                <div class="dropdown-menu scroller" style="height:auto;" id="projectsSelector">
+                    <button class="dropdown-item" *ngFor="let repo of repos" (click)='loadProjectBuilds(this.repo.name)'>
+                        {{ repo.name }}
+                    </button>
+                </div>
+            </li>
+          <li *ngIf="this.projectName != null" [ngClass]="{'active': this.projectName != null && this.selectedBuild == null}" class="breadcrumb-item" [routerLink]="['/projects/ci', this.projectName]">
+            <a (click)="deselectBuilds()">
+                {{ this.projectName }}
+            </a>
+            <!--i class="fas fa-caret-right mx-2" aria-hidden="true" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+            <div class="dropdown-menu scroller text-center" style="height:100px; width:20px;" id="buildSelector">
+                <a *ngFor="let workflowRun of workflowRuns; index as i" (click)='loadBuild(i)'>
+                    #{{ workflowRun.run_number }}<br>
+                </a>
+            </div-->
+          </li>
+          <li *ngIf="this.selectedBuild != null" [ngClass]="{'active': this.selectedBuild != null}" class="breadcrumb-item">
+              #{{ this.selectedBuild.run_number }}
+            </li>
+        </ol>
+      </nav>
 </section>
 
 <hr class="my-5">
@@ -18,23 +39,42 @@
 <section class="text-center">
     <!--Builds from GitHub-->
     <div class="row flex-xl-nowrap mb-4 wow fadeIn">
-        <div class="col-md-3 col-sm-4 col-xs-5 w-20 p-1 side-nav">
-            <nav>
-                <div id="sidebar" class="side-nav fixed">
-                    <spinner *ngIf="projectName == null" class="spinner-border text-info mx-auto" role="status">
-                        <span class="sr-only">Loading...</span>
-                    </spinner>
-                    <div *ngIf="workflowRuns != null && workflowRuns['total_count'] != 0" class="p-4 border lime lighten-5 scroller">
-                        <loop-builds *ngFor="let workflowRun of workflowRuns; index as i">
-                            <div class="mb-4 active bd-sidenav-active">
-                                <button class="btn btn-{{ getColor(workflowRun.conclusion) }}" (click)='loadBuild(i)'>
-                                    Build#{{ this.builds.total_count - i }}
-                                </button>
-                            </div>
-                        </loop-builds>
-                    </div>
+        <div class="col-md-3 col-sm-4 col-xs-5 w-20 p-2">
+            <spinner *ngIf="projectName == null" class="spinner-border text-info mx-auto" role="status">
+                <span class="sr-only">Loading...</span>
+            </spinner>
+            <div *ngIf="workflowRuns != null && workflowRuns['total_count'] != 0" class="p-1 border lime lighten-5">
+                <div class="border grey lighten-2 mb-2 p-1" [ngSwitch]="this.workflowRuns[0].conclusion">
+                    <h5>  
+                        <i class="fas fa-sun" *ngSwitchCase="'success'"></i>
+                        <i class="fas fa-cloud-rain" *ngSwitchCase="'failure'"></i>
+                        <i class="fas fa-cloud-sun-rain" *ngSwitchDefault></i>
+                        Build history
+                    </h5>
                 </div>
-            </nav>
+                <div class="scroller">
+                    <!--div class="mb-4 active bd-sidenav-active">
+                        <button class="btn btn-{{ getColor(workflowRun.conclusion) }}" (click)='loadBuild(i)'>
+                            Build#{{ this.builds.total_count - i }}
+                        </button>
+                    </div-->
+                    <a *ngFor="let workflowRun of workflowRuns; index as i" class="{{ getColor(workflowRun.conclusion) }}-text" [ngSwitch]="workflowRun.conclusion" [routerLink]="['/projects/ci', this.projectName, this.builds.total_count - i]" (click)='loadBuild(i)'>
+
+                        <div class="p-2 mt-1">
+                            <span style="float: left">
+                                <i class="fas fa-check-circle" *ngSwitchCase="'success'"></i>
+                                <i class="fas fa-times-circle" *ngSwitchCase="'failure'"></i>
+                                <i class="fas fa-cog" *ngSwitchDefault></i>
+                                {{ this.builds.total_count - i }}
+                            </span>
+                            <span style="float: right">
+                                {{ getDate(workflowRun.created_at) }}
+                            </span><br>
+                        </div>
+                        
+                    </a>
+                </div>
+            </div>
         </div>
         <!-- Build Info -->
         <div class="col-md-9 col-sm-8 col-xs-7 w-auto p-3" id="buildInfo">
@@ -43,7 +83,7 @@
                     Choose a project to show development builds.
                 </not-selected>
                 <h2 *ngIf="projectName != null">
-                    <b>{{ this.projectName }}</b>
+                    <b id="projectTitle">{{ this.projectName }}</b>
                 </h2>
                 <br>
                 <div *ngIf="builds != null" [ngSwitch]="builds['total_count']">
@@ -89,29 +129,22 @@
                                 <div class="row">
                                     <div class="border elegant-color-dark text-light" style="width: 100%; height:fit-content;">
                                         <div class="border special-color-dark text-light p-2" style="width: 100%;">
-                                            <b><i class="fas fa-terminal ml-1 mr-1"></i>Console Log</b>
+                                            <div class="custom-control custom-switch">
+                                                <span style="float: left"><b><i class="fas fa-terminal ml-1 mr-1"></i>Console Log</b></span>
+                                                <span style="float: right">
+                                                    <input type="checkbox" class="custom-control-input" id="consoleLogSwitch" (change)="showConsoleLog = !showConsoleLog;" [checked]="showConsoleLog">
+                                                    <label class="custom-control-label" for="consoleLogSwitch">Show</label>
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div class="p-2" *ngIf="this.steps != null">
+                                        <div class="p-2" *ngIf="this.steps != null && showConsoleLog">
                                             <jobs *ngFor="let step of this.steps">
                                                 <p class="{{ getColor(step.conclusion) }}-text text-monospace">
                                                     <i class="far fa-check-circle mr-1" *ngIf="step.conclusion == 'success'"></i>
                                                     <i class="far fa-times-circle mr-1" *ngIf="step.conclusion == 'failure'"></i>
                                                     {{ step.name }}
                                                 </p>
-                                                <!--div class="accordion" id="consoleAccordion">
-                                                    <div class="card-header" id="heading{{ step.number }}">
-                                                    <h5 class="mb-0">
-                                                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                                            <i class="far fa-check-circle mr-1" *ngIf="step.conclusion == 'success'"></i>
-                                                            <i class="far fa-times-circle mr-1" *ngIf="step.conclusion == 'failure'"></i>
-                                                            {{ step.name }}
-                                                        </button>
-                                                    </h5>
-                                                    </div>
-                                                    <div id="collapseTwo" class="collapse" aria-labelledby="heading{{ step.number }}" data-parent="#consoleAccordion">
-                                                        textInfo
-                                                    </div>
-                                                </div-->
+
                                             </jobs>
                                         </div>
                                     </div>

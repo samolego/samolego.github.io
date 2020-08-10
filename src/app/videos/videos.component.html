@@ -32,9 +32,15 @@
             </iframe>
           </div>
         </div>
-        <div class="col-md-7 text-left">
+        <div *ngIf="this.selectedVideo == null" class="col-md-7 text-left">
           <h2>{{ this.selectedVideo.title }}</h2>
           <p [innerHTML]='this.selectedVideo.descriptionHtml'></p>
+        </div>
+        <div *ngIf="this.selectedVideo.error != null">
+          <i class="fas fa-bug ml-2"></i> Could not load further video information.<br>
+          <a href="https://youtube.com/watch?v={{ this.selectedVideo.videoId }}" target="_blank">
+            <i class="fab fa-youtube ml-2"></i> Watch on YouTube
+          </a>
         </div>
       </div>
     </div>
