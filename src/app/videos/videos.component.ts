@@ -16,18 +16,6 @@ export class VideosComponent implements OnInit {
 
 
   ngOnInit(): void {
-    /*this.http.jsonp('https://api.rss2json.com/v1/api.json?rss_url=https://www.youtube.com/feeds/videos.xml?channel_id=UCtPiCXgdX4A3UCk-2oYZITw', 'callback')
-    .subscribe(data => {
-      this.videos = data["items"];
-    });*/
-    /*this.http.jsonp('https://invidio.us/api/v1/channels/UCtPiCXgdX4A3UCk-2oYZITw', 'callback').subscribe(data => {
-      console.log(data);
-      this.videos = data["latestVideos"]
-    });
-    function callback() {
-      console.log("Hello");
-    }*/
-
     this.http.get("https://invidio.us/api/v1/channels/UCtPiCXgdX4A3UCk-2oYZITw").subscribe(data => {
       this.videos = data["latestVideos"];
     });
