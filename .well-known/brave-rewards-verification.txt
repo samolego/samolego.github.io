@@ -1,0 +1,4 @@
+This is a Brave Rewards publisher verification file.
+
+Domain: samolego.github.io
+Token: d3859fbaf26b65d16d5ec2cc185573a3767563834e19560b52c33e48e643af9a
