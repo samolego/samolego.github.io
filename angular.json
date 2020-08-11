@@ -24,6 +24,7 @@
             "tsConfig": "tsconfig.app.json",
             "aot": true,
             "assets": [
+              "src/.well-known/brave-rewards-verification.txt",
               "src/favicon.ico",
               "src/assets"
             ],
