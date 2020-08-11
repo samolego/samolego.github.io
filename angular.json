@@ -25,6 +25,7 @@
             "aot": true,
             "assets": [
               "src/.well-known/brave-rewards-verification.txt",
+              "src/manifest.json",
               "src/favicon.ico",
               "src/assets"
             ],
