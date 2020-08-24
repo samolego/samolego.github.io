@@ -29,10 +29,8 @@ jobs:
       run: cp docs/index.html docs/404.html
     - name: Github Pages
       if: success()
-      uses: crazy-max/ghaction-github-pages@v1.4.0
+      uses: peaceiris/actions-gh-pages@v3
       with:
-        target_branch: master
-        build_dir: docs/
-      env:
-        GITHUB_PAT: ${{ secrets.pat }}
-      
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_branch: master
+        publish_dir: docs/
