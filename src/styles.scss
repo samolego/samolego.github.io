@@ -1,1 +1,135 @@
-/* You can add global styles to this file, and also import other style files */
+/* Make footer always on bottom */
+html {
+  overflow: hidden;
+}
+
+section {
+  min-height: 100%;
+}
+
+footer {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  overflow:hidden;
+}
+
+@font-face {
+  font-family: system;
+  font-style: normal;
+  font-weight: 300;
+  src: local(".SFNSText-Light"), local(".HelveticaNeueDeskInterface-Light"),
+  local("Roboto-Light"), local("DroidSans"), local("Tahoma"),
+  local(".LucidaGrandeUI"), local("Ubuntu Light"), local("Segoe UI Light");
+}
+
+
+.title-bar {
+  height: 31px;
+  background-color: #d6dae0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  user-select: none;
+}
+
+.logo-description {
+  color: black;
+  font-size: 12px;
+  font-family: "system";
+  vertical-align: middle;
+}
+
+.minimize {
+  color: black;
+  font-size: 12px;
+  padding: 7px 15px 9px 15px;
+}
+
+.maximize {
+  color: black;
+  font-size: 22px;
+  padding: 0px 15px 5px 15px;
+}
+
+.close {
+  color: black;
+  font-size: 15px;
+  padding: 7px 17px 7px 17px;
+}
+
+.maximize:hover,
+.minimize:hover {
+  background-color: rgba(0, 0, 0, 0.09765625);
+  /* cursor: context-menu; */
+}
+
+.close:hover {
+  background-color: #E81123;
+}
+
+.ssl-padlock {
+  user-select: none;
+  padding-left: 8px;
+  margin-right: 8px;
+}
+
+.url-bar {
+  height: 28px;
+  background-color: #f1f3f4;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  overflow: scroll;
+  text-overflow: ellipsis;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  border-bottom: 1px solid lightgray;
+}
+
+.url-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.domain-name {
+  color: #000000;
+  font-size: 14px;
+  font-family: "system";
+}
+
+.domain-path {
+  color: #7c7c7c;
+  font-size: 14px;
+  font-family: "system";
+}
+
+.title-bar-width {
+  width: 100%;
+}
+
+.content {
+  width: 100%;
+}
+
+.window {
+  color: transparent;
+  background-color: transparent;
+  border-color: black;
+  height: 80vh; /* title bar height + content height */
+  width: 90%;
+}
+.title-bar:active { // todo: apply to whole window
+  /* apply border to window class */
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+  0 8px 10px 1px rgba(0, 0, 0, 0.14),
+  0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+/* No padding if both window and box classes are applied */
+.window.box {
+  padding: 0;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
