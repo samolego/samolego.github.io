@@ -1,7 +1,7 @@
 <!-- Main layout -->
 <section class="section" style="background-image:url(https://kde.org/announcements/plasma/5/5.22.0/volma.webp);background-size:cover">
   <div class="container">
-    <div id="firefox-window" class="window box" cdkDrag>
+    <div id="firefox-window" class="window box slide-in" cdkDrag>
       <!-- Title bar start -->
       <div class="title-bar-width">
         <div class="title-bar" cdkDragHandle>
@@ -17,7 +17,7 @@
         </div>
         <div class="url-bar">
           <i class="fa-solid fa-lock mx-2"></i>
-          <span class="domain-name">{{this.title}}</span>
+          <span class="domain-name">localhost:4200</span>
           <span class="domain-path">{{this.href}}</span>
         </div>
       </div>
@@ -42,5 +42,6 @@
            src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Windows_Explorer_Icon.svg/512px-Windows_Explorer_Icon.svg.png"
            alt="explorer"/>
     </button>
+    <div class="is-align-content-flex-end">{{ this.time | date: 'hh:mm:ss a' }}</div>
   </div>
 </footer>

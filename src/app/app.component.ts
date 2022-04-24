@@ -9,28 +9,38 @@ import { Router } from '@angular/router';
 export class AppComponent {
 
   title = 'samolego.github.io';
+  time = new Date();
+  private intervalId: number | undefined;
 
   constructor(private router: Router, private elRef:ElementRef) {}
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.intervalId = setInterval(() => {
+      this.time = new Date();
+    }, 1000);
+  }
+
+  ngOnDestroy() {
+    clearInterval(this.intervalId);
+  }
 
   get href(): string | undefined {
     return this.router.url;
   }
 
   toggleWindow(windowSelector: string, close: boolean = false) {
-    const window = <HTMLElement> this.elRef.nativeElement.querySelector(windowSelector);
+    const windowElement = <HTMLElement> this.elRef.nativeElement.querySelector(windowSelector);
 
-    if (window) {
+    if (windowElement) {
       // Animation
-      window.style.display = window.style.display === 'none' ? '' : 'none';
+      windowElement.classList.toggle('slide-out');
+      windowElement.classList.toggle('slide-in');
 
       const button = <HTMLElement> this.elRef.nativeElement.querySelector(windowSelector + "-button");
       if (button) {
         button.classList.remove(close ? 'is-dark' : 'is-light');
         button.classList.add(close ? 'is-light' : 'is-dark');
       }
-
     }
   }
 }
