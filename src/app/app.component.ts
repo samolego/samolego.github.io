@@ -1,4 +1,4 @@
-import {Component, ElementRef, HostListener} from '@angular/core';
+import {Component, ElementRef} from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -12,7 +12,7 @@ export class AppComponent {
   time = new Date();
   private intervalId: number | undefined;
 
-  constructor(private router: Router, private elRef:ElementRef) {}
+  constructor(private router: Router, private elRef: ElementRef) {}
 
   ngOnInit() {
     this.intervalId = setInterval(() => {
