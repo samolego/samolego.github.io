@@ -1,7 +1,8 @@
 
 <section class="section" style="background-image:url(https://kde.org/announcements/plasma/5/5.22.0/volma.webp);background-size:cover">
   <div class="container">
-    <div id="firefox-window" class="window box" cdkDrag (click)="reorderWindows(firefoxWindow)" #firefoxWindow>
+    <div id="firefox-window" class="window box" cdkDrag (click)="reorderWindows(firefoxWindow)"
+         (cdkDragStarted)="reorderWindows(firefoxWindow)" #firefoxWindow>
       <!-- Title bar start -->
       <div class="title-bar-width">
         <div class="title-bar" cdkDragHandle>
@@ -73,7 +74,8 @@
         </router-outlet>
       </div>
     </div>
-    <div id="explorer-window" class="window box" cdkDrag (click)="reorderWindows(explorerWindow)" #explorerWindow>
+    <div id="explorer-window" class="window box" cdkDrag (click)="reorderWindows(explorerWindow)"
+         (cdkDragStarted)="reorderWindows(explorerWindow)" #explorerWindow>
       <!-- Title bar start -->
       <div class="title-bar-width">
         <div class="title-bar" cdkDragHandle>
@@ -122,20 +124,22 @@
     </div>
   </div>
 </section>
-<footer class="footer p-1 has-background-grey-dark" style="max-height: 5vh">
+<footer class="footer p-1 has-background-grey-dark">
   <div class="columns is-vcentered">
     <div class="column is-11 has-text-centered">
-      <button class="button is-ghost cyan">
+      <button class="button is-ghost">
         <img height="25" width="25"
              src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Windows_logo_-_2021.svg/1024px-Windows_logo_-_2021.svg.png"
              alt="windows-logo"/>
       </button>
-      <button id="firefox-window-button" class="button is-dark" (click)="toggleWindow('#firefox-window')">
+      <button id="firefox-window-button" class="button is-dark"
+              (click)="toggleWindow('#firefox-window'); reorderWindows(firefoxWindow)">
         <img height="25" width="25"
              src="https://www.mozilla.org/media/protocol/img/logos/firefox/browser/logo.eb1324e44442.svg"
              alt="firefox"/>
       </button>
-      <button class="button is-light" id="explorer-window-button" (click)="toggleWindow('#explorer-window')">
+      <button class="button is-ghost" id="explorer-window-button"
+              (click)="toggleWindow('#explorer-window'); reorderWindows(explorerWindow)">
         <img height="25" width="25"
              src="https://raw.githubusercontent.com/kuroehanako/Cobalt-icons/main/Cobalt/scalable/apps/system-file-manager.svg"
              alt="explorer"/>

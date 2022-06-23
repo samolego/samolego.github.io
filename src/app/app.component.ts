@@ -14,6 +14,7 @@ export class AppComponent {
   private intervalId: number | undefined;
   private fullscreen: boolean;
   components: Set<any>;
+  private activeWindow: HTMLElement;
 
   constructor(public router: Router, private elRef: ElementRef, @Inject(DOCUMENT) private document: any) {
     this.fullscreen = false;
@@ -23,6 +24,8 @@ export class AppComponent {
     this.router.config.forEach(element => {
       this.components.add(element.path);
     });
+
+    this.activeWindow = <HTMLElement>this.elRef.nativeElement.querySelector("#firefox-window");
   }
 
   ngOnInit() {
@@ -43,9 +46,14 @@ export class AppComponent {
     const windowElement = <HTMLElement> this.elRef.nativeElement.querySelector(windowSelector);
 
     if (windowElement) {
-      // Animation
-      windowElement.classList.toggle('slide-out');
-      windowElement.classList.toggle('slide-in');
+      if (this.activeWindow === windowElement) {
+        // Animation
+        windowElement.classList.toggle('slide-out');
+        windowElement.classList.toggle('slide-in');
+      } else {
+        this.reorderWindows(windowElement);
+      }
+
 
       if (close) {
         //if (this.fullscreen) this.toggleFullscreen(windowSelector);
@@ -54,8 +62,8 @@ export class AppComponent {
 
       const button = <HTMLElement>this.elRef.nativeElement.querySelector(windowSelector + "-button");
       if (button) {
-        button.classList.remove(close ? 'is-dark' : 'is-light');
-        button.classList.add(close ? 'is-light' : 'is-dark');
+        button.classList.remove(close ? 'is-dark' : 'is-ghost');
+        button.classList.add(close ? 'is-ghost' : 'is-dark');
       }
     }
   }
@@ -150,5 +158,6 @@ export class AppComponent {
       windows[i].style.zIndex = (100 + i).toString();
     }
     active.style.zIndex = (100 + windows.length).toString();
+    this.activeWindow = active;
   }
 }
