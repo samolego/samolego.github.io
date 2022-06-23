@@ -7,8 +7,7 @@ import {DonateComponent} from "./donate/donate.component";
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
+    component: HomeComponent,
   },
   {
     path: 'home',

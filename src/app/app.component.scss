@@ -100,15 +100,6 @@
   width: 100%;
 }
 
-.window {
-  background-color: #ffffff;
-  border-color: black;
-  height: 80vh; /* title bar height + content height */
-  width: 90%;
-  z-index: 100;
-  position: absolute;
-  top: 20px;
-}
 
 
 .slide-in {
@@ -160,16 +151,25 @@
   padding: 0;
 }
 
-#main-content {
-  // set bottom rounded corners
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
-  // set shadow
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14);
+.window {
+  background-color: #ffffff;
+  height: 80vh; /* title bar height + content height */
+  width: 90%;
+  z-index: 100;
+  position: absolute;
+  top: 20px;
 
-  width: auto;
+  // Add border on all sides
+  border: 1px solid lightgray;
+
+  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.window-content {
   // Allow overflow to scroll
   overflow-y: scroll;
   overflow-x: hidden;
+
+  height: max-content;
 }
 

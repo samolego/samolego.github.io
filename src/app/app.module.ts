@@ -9,13 +9,17 @@ import {HomeComponent} from './home/home.component';
 import {E404Component} from './e404/e404.component';
 import {DonateComponent} from './donate/donate.component';
 import {FormsModule} from "@angular/forms";
+import {ProjectsComponent} from './projects/projects.component';
+import {ProjectComponent} from './projects/project/project.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     E404Component,
-    DonateComponent
+    DonateComponent,
+    ProjectsComponent,
+    ProjectComponent
   ],
   imports: [
     BrowserModule,

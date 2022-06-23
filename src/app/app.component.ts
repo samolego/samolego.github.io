@@ -13,9 +13,16 @@ export class AppComponent {
   time = new Date();
   private intervalId: number | undefined;
   private fullscreen: boolean;
+  components: Set<any>;
 
   constructor(public router: Router, private elRef: ElementRef, @Inject(DOCUMENT) private document: any) {
     this.fullscreen = false;
+
+    // Setting available components
+    this.components = new Set();
+    this.router.config.forEach(element => {
+      this.components.add(element.path);
+    });
   }
 
   ngOnInit() {
@@ -41,7 +48,7 @@ export class AppComponent {
       windowElement.classList.toggle('slide-in');
 
       if (close) {
-        if (this.fullscreen) this.toggleFullscreen(windowSelector);
+        //if (this.fullscreen) this.toggleFullscreen(windowSelector);
         //windowElement.style.transform = "";
       }
 
@@ -74,7 +81,6 @@ export class AppComponent {
     windowElement.style.top = "0";
     windowElement.style.left = "0";
     windowElement.style.width = "63vw";
-    windowElement.style.zIndex = "9999";
     //Show overflow
     windowElement.style.overflow = "auto";
     //Zoom in windowElement
@@ -125,5 +131,24 @@ export class AppComponent {
 
   onDomainEdit() {
 
+  }
+
+  reorderWindows(active: HTMLElement) {
+    // Loop through all windowss
+    const windows = [...this.elRef.nativeElement.querySelectorAll(".window")];
+
+    // Sort windows by zIndex style
+
+    windows.sort((a: HTMLElement, b: HTMLElement) => {
+      const aZIndex = parseInt(a.style.zIndex);
+      const bZIndex = parseInt(b.style.zIndex);
+      return aZIndex - bZIndex;
+    });
+
+    // Assign 100 + i zIndex to each window
+    for (let i = 0; i < windows.length; i++) {
+      windows[i].style.zIndex = (100 + i).toString();
+    }
+    active.style.zIndex = (100 + windows.length).toString();
   }
 }
