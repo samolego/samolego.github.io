@@ -7,7 +7,6 @@
   local(".LucidaGrandeUI"), local("Ubuntu Light"), local("Segoe UI Light");
 }
 
-
 .title-bar {
   height: 31px;
   background-color: #d6dae0;
@@ -20,26 +19,27 @@
 .logo-description {
   color: black;
   font-size: 12px;
-  font-family: "system";
+  font-family: "system", serif;
   vertical-align: middle;
 }
 
 .minimize {
   color: black;
   font-size: 12px;
-  padding: 7px 15px 9px 15px;
+  padding: 12px 15px 3px 15px;
+  margin-top: 15px;
 }
 
 .maximize {
   color: black;
   font-size: 22px;
-  padding: 0px 15px 5px 15px;
+  padding: 4px 15px 1px 15px;
 }
 
 .close {
   color: black;
   font-size: 15px;
-  padding: 7px 17px 7px 17px;
+  padding: 11px 17px 3px 17px;
 }
 
 .maximize:hover,
@@ -84,6 +84,10 @@
 
 .domain-path {
   color: #7c7c7c;
+  background-color: #f1f3f4;
+  caret-color: #7c7c7c;
+  border: 0;
+  outline: none;
   font-size: 14px;
   font-family: "system";
 }
@@ -101,7 +105,11 @@
   border-color: black;
   height: 80vh; /* title bar height + content height */
   width: 90%;
+  z-index: 100;
+  position: absolute;
+  top: 20px;
 }
+
 
 .slide-in {
   animation: slide-in 0.5s forwards;
@@ -150,5 +158,18 @@
 /* No padding if both window and box classes are applied */
 .window.box {
   padding: 0;
+}
+
+#main-content {
+  // set bottom rounded corners
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  // set shadow
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14);
+
+  width: auto;
+  // Allow overflow to scroll
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 

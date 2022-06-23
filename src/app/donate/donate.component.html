@@ -1,0 +1,62 @@
+<section class="section">
+  <strong>
+    Wow! You have considered donating?
+  </strong>
+  <p>
+    <strong>Thank you.</strong>
+  </p>
+  <p>
+    I really appreciate it!
+  </p>
+  <div class="columns">
+    <div class="column is-6 notification is-info m-2 has-text-centered">
+      <p>
+        Paypal
+        <i class="fa-brands fa-paypal ml-1"></i>
+      </p>
+      <div class="columns is-vcentered">
+        <div class="column is-6">
+          <a class="button is-warning is-dark" href="https://www.paypal.com/donate/?hosted_button_id=HPUP9R6VH7FTN"
+             target="_blank">
+            Donate
+            <i class="fa-solid fa-circle-dollar-to-slot fa-lg ml-1"></i>
+          </a>
+        </div>
+        <div class="column is-6">
+          <img src="../../assets/img/paypal_qr.png" class="box" style="width: 80%">
+        </div>
+      </div>
+    </div>
+
+    <div class="column is-6 notification has-background-grey-darker has-text-centered has-text-light m-2">
+      <p>
+        BitCoin
+        <i class="fa-brands fa-bitcoin ml-1"></i>
+      </p>
+
+      <div class="columns is-vcentered">
+        <div class="column is-6">
+          <p class="has-text-centered">
+            <i class="fa-solid fa-wallet mr-1 has-text-warning"></i>
+            <input class="has-background-grey-darker has-text-warning" value="{{this.btcAddress}}" style="border: 0;"
+                   readonly>
+          </p>
+          <button class="button is-dark has-background-grey ml-2" (click)="copyBtcAddress()">
+            Copy<i class="far fa-clipboard ml-1"></i>
+          </button>
+
+          <div class="notification is-warning is-light p-2 mt-2 ml-2" role="alert" id="clipboardCopied"
+               *ngIf="this.alertVisible">
+            Copied to clipboard!
+            <button type="button" class="delete" (click)="this.alertVisible = false;">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+        <div class="column is-6">
+          <img src="../../assets/img/btc_address.png" class="box" style="width: 80%">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
