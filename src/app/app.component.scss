@@ -18,6 +18,7 @@ footer {
   display: flex;
   justify-content: space-between;
   user-select: none;
+  padding: 0;
 }
 
 .logo-description {
@@ -43,6 +44,8 @@ footer {
 .close {
   color: black;
   font-size: 15px;
+  // Rounded corners
+  border-radius: 0 6px 0 0;
   padding: 11px 17px 3px 17px;
 }
 
@@ -171,3 +174,6 @@ footer {
   min-height: 90%;
 }
 
+.window-buttons {
+  padding-top: 5px;
+}

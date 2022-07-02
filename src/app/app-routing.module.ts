@@ -3,6 +3,8 @@ import {RouterModule, Routes} from '@angular/router';
 import {HomeComponent} from "./home/home.component";
 import {E404Component} from "./e404/e404.component";
 import {DonateComponent} from "./donate/donate.component";
+import {ProjectsComponent} from "./projects/projects.component";
+import {ProjectComponent} from "./projects/project/project.component";
 
 const routes: Routes = [
   {
@@ -16,6 +18,14 @@ const routes: Routes = [
   {
     path: 'donate',
     component: DonateComponent
+  },
+  {
+    path: 'projects',
+    component: ProjectsComponent
+  },
+  {
+    path: 'projects/:project',
+    component: ProjectComponent
   },
   {
     path: '**',

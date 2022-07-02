@@ -1,6 +1,7 @@
 import {Component, ElementRef, Inject} from '@angular/core';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {DOCUMENT} from "@angular/common";
+
 
 @Component({
   selector: 'app-root',
@@ -13,29 +14,35 @@ export class AppComponent {
   time = new Date();
   private intervalId: number | undefined;
   private fullscreen: boolean;
-  components: Set<any>;
+  components: Set<string>;
   activeWindows: Set<HTMLElement>;
 
-  constructor(public router: Router, private elRef: ElementRef, @Inject(DOCUMENT) private document: any) {
+  constructor(public router: Router, private elRef: ElementRef, @Inject(DOCUMENT) private document: any, public route: ActivatedRoute) {
     this.fullscreen = false;
 
     // Setting available components
     this.components = new Set();
-    this.router.config.forEach(element => {
-      this.components.add(element.path);
+    this.router.config.forEach(route => {
+      if (route !== undefined) {
+        this.components.add(route.path as string);
+      }
     });
 
     this.activeWindows = new Set();
   }
 
 
-  ngOnInit() {
+  ngAfterViewInit() {
     this.intervalId = setInterval(() => {
       this.time = new Date();
     }, 1000);
 
     this.elRef.nativeElement.querySelectorAll(".window").forEach((element: HTMLElement) => this.activeWindows.add(element));
-    //this.elRef.nativeElement.querySelector("#explorer-window").classList.toggle("slide-out");
+
+    // debug
+    this.toggleWindow("#notepad-window", true);
+    this.toggleWindow("#explorer-window", true);
+    //this.notepadContent(this.elRef.nativeElement.querySelector("#main-content").innerHTML);
   }
 
   ngOnDestroy() {
@@ -47,16 +54,14 @@ export class AppComponent {
   }
 
   toggleWindow(windowSelector: string, close: boolean = false) {
-    const windowElement = <HTMLElement> this.elRef.nativeElement.querySelector(windowSelector);
+    const windowElement = this.elRef.nativeElement.querySelector(windowSelector) as HTMLElement;
 
     if (windowElement) {
       // Get window with highest zIndex in this.activeWindows
-      const elements = [...this.activeWindows.keys()].sort((a: HTMLElement, b: HTMLElement) => a.style.zIndex < b.style.zIndex ? 1 : -1);
-      console.log(elements);
+      const elements = [...this.activeWindows.keys()].sort((a: HTMLElement, b: HTMLElement) => a.style.zIndex > b.style.zIndex ? -1 : 1);
 
       if (elements[0] === windowElement && !close) {
         // Animation
-        console.log("Animation,", windowSelector);
         windowElement.classList.toggle('slide-out');
         windowElement.classList.toggle('slide-in');
       } else {
@@ -154,15 +159,11 @@ export class AppComponent {
 
   reorderWindows(active: HTMLElement) {
     // Loop through all windowss
-    const windows = [...this.elRef.nativeElement.querySelectorAll(".window")];
+    //const windows = [...this.elRef.nativeElement.querySelectorAll(".window")];
+    const windows = [...this.activeWindows.keys()].sort((a: HTMLElement, b: HTMLElement) => a.style.zIndex < b.style.zIndex ? -1 : 1);
 
     // Sort windows by zIndex style
     if (windows.length > 1) {
-      windows.sort((a: HTMLElement, b: HTMLElement) => {
-        const aZIndex = parseInt(a.style.zIndex);
-        const bZIndex = parseInt(b.style.zIndex);
-        return aZIndex < bZIndex ? 1 : -1;
-      });
 
       // Assign 100 + i zIndex to each window
       for (let i = 0; i < windows.length; i++) {
@@ -171,5 +172,69 @@ export class AppComponent {
     }
 
     active.style.zIndex = (100 + windows.length).toString();
+  }
+
+  canShowDir(path: string): boolean {
+    // Check router url and path
+    path = '/' + path;
+
+    if (this.router.url == path) {
+      return false;
+    }
+
+    if (this.router.url == '/') {
+      return path.split('/').length == 2;
+    }
+
+    if (this.router.url.split('/').length === path.split('/').length) {
+
+    }
+    return path.startsWith(this.router.url);
+  }
+
+  openNotepad() {
+    this.reloadNotepad();
+    this.toggleWindow("#notepad-window");
+    //this.reorderWindows(this.elRef.nativeElement.querySelector("#notepad-window"));
+  }
+
+
+  notepadContent(content: string) {
+    // Add new lines after each ">"
+    const lines = content.split('>');
+    let newContent = '';
+    let tab = 0;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i]
+        .split(' ')
+        .filter(value => !value.startsWith("_"))
+        .join(' ');
+
+      if (line.includes('<') && !line.includes("img") && !line.includes("</")) {
+        ++tab;
+      }
+
+      newContent += ' '.repeat(tab * 4) + line;
+
+      if (line.includes('</')) {
+        --tab;
+      }
+
+      if (i + 1 < lines.length) {
+        newContent += '>\n';
+      }
+    }
+
+    this.elRef.nativeElement.querySelector("#notepad-content").value = newContent;
+  }
+
+  saveNotepad() {
+    this.elRef.nativeElement.querySelector("#main-content router-outlet").nextSibling.innerHTML =
+      this.elRef.nativeElement.querySelector("#notepad-content").value;
+  }
+
+  reloadNotepad() {
+    this.notepadContent(this.elRef.nativeElement.querySelector("#main-content router-outlet").nextSibling.innerHTML);
   }
 }

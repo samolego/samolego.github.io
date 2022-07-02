@@ -2,6 +2,36 @@
   <div class="container">
 
 
+    <div id="notepad-window" class="window box" cdkDrag (click)="this.reorderWindows(notepadWindow)"
+         (cdkDragStarted)="reorderWindows(notepadWindow)" #notepadWindow>
+      <!-- Title bar start -->
+      <div class="title-bar-width">
+        <div class="title-bar" cdkDragHandle>
+          <div class="mt-1">
+            <i class="fa-solid fa-file-lines mx-2"></i>
+            <span class="logo-description">index.html - Notepad</span>
+          </div>
+          <div class="window-buttons">
+            <span class="minimize" (click)="toggleWindow('#notepad-window'); $event.stopPropagation()">&#8212;</span>
+            <span class="maximize" (click)="toggleFullscreen('#notepad-window'); $event.stopPropagation()">□</span>
+            <span class="close" (click)="toggleWindow('#notepad-window',true); $event.stopPropagation()">✕</span>
+          </div>
+        </div>
+        <div class="url-bar">
+          <button class="button is-success" (click)="this.saveNotepad()">
+            <i class="fa-solid fa-floppy-disk mx-2"></i> Save
+          </button>
+
+          <a class="button is-warning" (click)="this.reloadNotepad()">
+            <i class="fa-solid fa-arrows-rotate mx-2"></i> Reload
+          </a>
+        </div>
+      </div>
+      <div class="has-background-white window-content">
+        <textarea class="textarea has-fixed-size" id="notepad-content" style="border: 0; height: 50rem;"></textarea>
+      </div>
+    </div>
+
     <div id="explorer-window" class="window box" cdkDrag (click)="reorderWindows(explorerWindow)"
          (cdkDragStarted)="reorderWindows(explorerWindow)" #explorerWindow>
       <!-- Title bar start -->
@@ -11,10 +41,10 @@
             <i class="fa-solid fa-folder mx-2"></i>
             <span class="logo-description">{{this.router.url}} - File Manager</span>
           </div>
-          <div>
-            <span class="minimize" (click)="toggleWindow('#explorer-window')">&#8212;</span>
-            <span class="maximize" (click)="toggleFullscreen('#explorer-window')">□</span>
-            <span class="close" (click)="toggleWindow('#explorer-window',true)">✕</span>
+          <div class="window-buttons">
+            <span class="minimize" (click)="toggleWindow('#explorer-window'); $event.stopPropagation()">&#8212;</span>
+            <span class="maximize" (click)="toggleFullscreen('#explorer-window'); $event.stopPropagation()">□</span>
+            <span class="close" (click)="toggleWindow('#explorer-window',true); $event.stopPropagation()">✕</span>
           </div>
         </div>
         <div class="url-bar">
@@ -25,25 +55,39 @@
       </div>
       <div class="has-background-white window-content">
         <div class="columns">
-          <div class="column is-2 has-background-grey-lighter">
-            <div class="columns is-1 has-text-centered" *ngFor="let path of this.components">
-              <a class="button is-ghost mb-2" (click)="this.router.navigateByUrl(path)">
-                <img
-                  src="https://raw.githubusercontent.com/kuroehanako/Cobalt-icons/main/Cobalt/scalable/places/folder.svg"
-                  height="10px" alt="folder"/>
-                {{path}}
-              </a>
-            </div>
+          <div class="column is-2 has-background-grey-lighter pt-5 has-text-left">
+            <ng-container *ngFor="let path of this.components">
+              <div class="columns is-1 has-text-left" *ngIf="path.split('/').length === 1">
+                <div class="column">
+                  <a class="button is-ghost mb-2" (click)="this.router.navigateByUrl(path)">
+                    <img
+                      src="https://raw.githubusercontent.com/kuroehanako/Cobalt-icons/main/Cobalt/scalable/places/folder.svg"
+                      alt="folder"/>
+                    /{{ path !== '**' ? path : 'dev/null' }}
+                  </a>
+                </div>
+              </div>
+            </ng-container>
           </div>
           <div class="column">
-            <div class="columns is-vcentered">
-              <div class="column is-1 has-text-centered" *ngFor="let path of this.components">
-                <a class="button is-small is-ghost mb-2" (click)="this.router.navigateByUrl(path)">
+            <div class="columns is-vcentered p-2">
+              <ng-container *ngFor="let path of this.components">
+                <div class="column is-1 has-text-centered" *ngIf="this.canShowDir(path)">
+                  <a class="button is-small is-ghost mb-2" (click)="this.router.navigateByUrl(path)">
+                    <img
+                      src="https://raw.githubusercontent.com/kuroehanako/Cobalt-icons/main/Cobalt/scalable/places/folder.svg"
+                      alt="folder"/>
+                  </a>
+                  {{ path !== '**' ? path.split("/").pop() : '/dev/null' }}
+                </div>
+              </ng-container>
+              <div class="column is-1 has-text-centered">
+                <a class="button is-small is-ghost mb-2" (click)="this.openNotepad(); $event.stopPropagation()">
                   <img
-                    src="https://raw.githubusercontent.com/kuroehanako/Cobalt-icons/main/Cobalt/scalable/places/folder.svg"
-                    alt="folder"/>
+                    src="https://raw.githubusercontent.com/kuroehanako/Cobalt-icons/main/Cobalt/scalable/apps/kate.svg"
+                    alt="notepad"/>
                 </a>
-                {{path}}
+                index.html
               </div>
             </div>
           </div>
@@ -60,10 +104,10 @@
             <i class="fa-brands fa-firefox-browser mx-2"></i>
             <span class="logo-description">{{this.title}} - Mozilla Firefox</span>
           </div>
-          <div>
-            <span class="minimize" (click)="toggleWindow('#firefox-window')">&#8212;</span>
-            <span class="maximize" (click)="toggleFullscreen('#firefox-window')">□</span>
-            <span class="close" (click)="toggleWindow('#firefox-window',true)">✕</span>
+          <div class="window-buttons">
+            <span class="minimize" (click)="toggleWindow('#firefox-window'); $event.stopPropagation()">&#8212;</span>
+            <span class="maximize" (click)="toggleFullscreen('#firefox-window'); $event.stopPropagation()">□</span>
+            <span class="close" (click)="toggleWindow('#firefox-window',true); $event.stopPropagation()">✕</span>
           </div>
         </div>
         <div class="url-bar">
@@ -76,7 +120,7 @@
       </div>
       <div id="main-content" class="window-content has-background-white">
         <nav class="navbar has-background-success-dark has-text-light" role="navigation" aria-label="main navigation"
-             *ngIf="this.components.has(this.router.url.substring(1))">
+             *ngIf="this.components.has(this.router.url.substring(1)) && this.router.url !== '/**'">
           <div class="navbar-brand">
             <a class="navbar-item" routerLink="home">
               <img src="../assets/img/icon.png" alt="logo">
@@ -128,7 +172,7 @@
 
   </div>
 </section>
-<footer class="footer p-1 has-background-grey-dark">
+<footer class="footer p-1 has-background-grey-dark" style="z-index: 110;">
   <div class="columns is-vcentered">
     <div class="column is-11 has-text-centered">
       <button class="button is-ghost">
