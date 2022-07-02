@@ -14,7 +14,7 @@ export class AppComponent {
   private intervalId: number | undefined;
   private fullscreen: boolean;
   components: Set<any>;
-  private activeWindow: HTMLElement;
+  activeWindows: Set<HTMLElement>;
 
   constructor(public router: Router, private elRef: ElementRef, @Inject(DOCUMENT) private document: any) {
     this.fullscreen = false;
@@ -25,13 +25,17 @@ export class AppComponent {
       this.components.add(element.path);
     });
 
-    this.activeWindow = <HTMLElement>this.elRef.nativeElement.querySelector("#firefox-window");
+    this.activeWindows = new Set();
   }
+
 
   ngOnInit() {
     this.intervalId = setInterval(() => {
       this.time = new Date();
     }, 1000);
+
+    this.elRef.nativeElement.querySelectorAll(".window").forEach((element: HTMLElement) => this.activeWindows.add(element));
+    //this.elRef.nativeElement.querySelector("#explorer-window").classList.toggle("slide-out");
   }
 
   ngOnDestroy() {
@@ -46,24 +50,35 @@ export class AppComponent {
     const windowElement = <HTMLElement> this.elRef.nativeElement.querySelector(windowSelector);
 
     if (windowElement) {
-      if (this.activeWindow === windowElement) {
+      // Get window with highest zIndex in this.activeWindows
+      const elements = [...this.activeWindows.keys()].sort((a: HTMLElement, b: HTMLElement) => a.style.zIndex < b.style.zIndex ? 1 : -1);
+      console.log(elements);
+
+      if (elements[0] === windowElement && !close) {
         // Animation
+        console.log("Animation,", windowSelector);
         windowElement.classList.toggle('slide-out');
         windowElement.classList.toggle('slide-in');
       } else {
         this.reorderWindows(windowElement);
-      }
 
+        if (close) {
+          this.activeWindows.delete(windowElement);
+          windowElement.classList.toggle('slide-out');
+          windowElement.classList.toggle('slide-in');
 
-      if (close) {
-        //if (this.fullscreen) this.toggleFullscreen(windowSelector);
-        //windowElement.style.transform = "";
-      }
-
-      const button = <HTMLElement>this.elRef.nativeElement.querySelector(windowSelector + "-button");
-      if (button) {
-        button.classList.remove(close ? 'is-dark' : 'is-ghost');
-        button.classList.add(close ? 'is-ghost' : 'is-dark');
+          //windowElement.classList.add('slide-out');
+          //windowElement.classList.remove('slide-in');
+        } else {
+          if (elements[0] === windowElement || !this.activeWindows.has(windowElement)) {
+            windowElement.classList.toggle('slide-out');
+            windowElement.classList.toggle('slide-in');
+          }
+          this.activeWindows.add(windowElement);
+          // Open window
+          //windowElement.classList.remove('slide-out');
+          //windowElement.classList.add('slide-in');
+        }
       }
     }
   }
@@ -137,27 +152,24 @@ export class AppComponent {
     }
   }
 
-  onDomainEdit() {
-
-  }
-
   reorderWindows(active: HTMLElement) {
     // Loop through all windowss
     const windows = [...this.elRef.nativeElement.querySelectorAll(".window")];
 
     // Sort windows by zIndex style
+    if (windows.length > 1) {
+      windows.sort((a: HTMLElement, b: HTMLElement) => {
+        const aZIndex = parseInt(a.style.zIndex);
+        const bZIndex = parseInt(b.style.zIndex);
+        return aZIndex < bZIndex ? 1 : -1;
+      });
 
-    windows.sort((a: HTMLElement, b: HTMLElement) => {
-      const aZIndex = parseInt(a.style.zIndex);
-      const bZIndex = parseInt(b.style.zIndex);
-      return aZIndex - bZIndex;
-    });
-
-    // Assign 100 + i zIndex to each window
-    for (let i = 0; i < windows.length; i++) {
-      windows[i].style.zIndex = (100 + i).toString();
+      // Assign 100 + i zIndex to each window
+      for (let i = 0; i < windows.length; i++) {
+        windows[i].style.zIndex = (100 + i).toString();
+      }
     }
+
     active.style.zIndex = (100 + windows.length).toString();
-    this.activeWindow = active;
   }
 }

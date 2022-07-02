@@ -100,12 +100,6 @@ footer {
   width: 100%;
 }
 
-.content {
-  width: 100%;
-}
-
-
-
 .slide-in {
   animation: slide-in 0.5s forwards;
   -webkit-animation: slide-in 0.5s forwards;
@@ -161,7 +155,7 @@ footer {
   width: 90%;
   z-index: 100;
   position: absolute;
-  top: 20px;
+  //top: 20px;
 
   // Add border on all sides
   border: 1px solid lightgray;
@@ -173,7 +167,7 @@ footer {
   // Allow overflow to scroll
   overflow-y: scroll;
   overflow-x: hidden;
-
-  height: fit-content;
+  max-height: 90%;
+  min-height: 90%;
 }
 

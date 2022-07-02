@@ -1,6 +1,56 @@
-
 <section class="section" style="background-image:url(https://kde.org/announcements/plasma/5/5.22.0/volma.webp);background-size:cover">
   <div class="container">
+
+
+    <div id="explorer-window" class="window box" cdkDrag (click)="reorderWindows(explorerWindow)"
+         (cdkDragStarted)="reorderWindows(explorerWindow)" #explorerWindow>
+      <!-- Title bar start -->
+      <div class="title-bar-width">
+        <div class="title-bar" cdkDragHandle>
+          <div class="mt-1">
+            <i class="fa-solid fa-folder mx-2"></i>
+            <span class="logo-description">{{this.router.url}} - File Manager</span>
+          </div>
+          <div>
+            <span class="minimize" (click)="toggleWindow('#explorer-window')">&#8212;</span>
+            <span class="maximize" (click)="toggleFullscreen('#explorer-window')">□</span>
+            <span class="close" (click)="toggleWindow('#explorer-window',true)">✕</span>
+          </div>
+        </div>
+        <div class="url-bar">
+          <i class="fa-solid fa-folder-tree mx-2"></i>
+          <input class="domain-path" value="{{this.href}}" (keyup.enter)="this.router.navigateByUrl(folderPath.value)"
+                 #folderPath/>
+        </div>
+      </div>
+      <div class="has-background-white window-content">
+        <div class="columns">
+          <div class="column is-2 has-background-grey-lighter">
+            <div class="columns is-1 has-text-centered" *ngFor="let path of this.components">
+              <a class="button is-ghost mb-2" (click)="this.router.navigateByUrl(path)">
+                <img
+                  src="https://raw.githubusercontent.com/kuroehanako/Cobalt-icons/main/Cobalt/scalable/places/folder.svg"
+                  height="10px" alt="folder"/>
+                {{path}}
+              </a>
+            </div>
+          </div>
+          <div class="column">
+            <div class="columns is-vcentered">
+              <div class="column is-1 has-text-centered" *ngFor="let path of this.components">
+                <a class="button is-small is-ghost mb-2" (click)="this.router.navigateByUrl(path)">
+                  <img
+                    src="https://raw.githubusercontent.com/kuroehanako/Cobalt-icons/main/Cobalt/scalable/places/folder.svg"
+                    alt="folder"/>
+                </a>
+                {{path}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div id="firefox-window" class="window box" cdkDrag (click)="reorderWindows(firefoxWindow)"
          (cdkDragStarted)="reorderWindows(firefoxWindow)" #firefoxWindow>
       <!-- Title bar start -->
@@ -19,7 +69,8 @@
         <div class="url-bar">
           <i class="fa-solid fa-lock mx-2"></i>
           <span class="domain-name">localhost:4200</span>
-          <input class="domain-path" value="{{this.href}}" (keyup.enter)="this.router.navigateByUrl(domainPath.value)"
+          <input class="domain-path title-bar-width" value="{{this.href}}"
+                 (keyup.enter)="this.router.navigateByUrl(domainPath.value)"
                  #domainPath/>
         </div>
       </div>
@@ -74,54 +125,7 @@
         </router-outlet>
       </div>
     </div>
-    <div id="explorer-window" class="window box" cdkDrag (click)="reorderWindows(explorerWindow)"
-         (cdkDragStarted)="reorderWindows(explorerWindow)" #explorerWindow>
-      <!-- Title bar start -->
-      <div class="title-bar-width">
-        <div class="title-bar" cdkDragHandle>
-          <div class="mt-1">
-            <i class="fa-solid fa-folder mx-2"></i>
-            <span class="logo-description">{{this.router.url}} - File Manager</span>
-          </div>
-          <div>
-            <span class="minimize" (click)="toggleWindow('#explorer-window')">&#8212;</span>
-            <span class="maximize" (click)="toggleFullscreen('#explorer-window')">□</span>
-            <span class="close" (click)="toggleWindow('#explorer-window',true)">✕</span>
-          </div>
-        </div>
-        <div class="url-bar">
-          <i class="fa-solid fa-folder-tree mx-2"></i>
-          <input class="domain-path" value="{{this.href}}" (keyup.enter)="this.router.navigateByUrl(folderPath.value)"
-                 #folderPath/>
-        </div>
-      </div>
-      <div class="has-background-white window-content ">
-        <div class="columns">
-          <div class="column is-2 has-background-grey-lighter">
-            <div class="columns is-1 has-text-centered" *ngFor="let path of this.components">
-              <a class="button is-ghost mb-2" (click)="this.router.navigateByUrl(path)">
-                <img
-                  src="https://raw.githubusercontent.com/kuroehanako/Cobalt-icons/main/Cobalt/scalable/places/folder.svg"
-                  height="10px" alt="folder"/>
-                {{path}}
-              </a>
-            </div>
-          </div>
-          <div class="column">
-            <div class="columns is-vcentered">
-              <div class="column is-1 has-text-centered" *ngFor="let path of this.components">
-                <a class="button is-small is-ghost mb-2" (click)="this.router.navigateByUrl(path)">
-                  <img
-                    src="https://raw.githubusercontent.com/kuroehanako/Cobalt-icons/main/Cobalt/scalable/places/folder.svg"
-                    alt="folder"/>
-                </a>
-                {{path}}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+
   </div>
 </section>
 <footer class="footer p-1 has-background-grey-dark">
@@ -132,13 +136,15 @@
              src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Windows_logo_-_2021.svg/1024px-Windows_logo_-_2021.svg.png"
              alt="windows-logo"/>
       </button>
-      <button id="firefox-window-button" class="button is-dark"
+      <button id="firefox-window-button" class="button" [class.is-dark]="this.activeWindows.has(firefoxWindow)"
+              [class.is-ghost]="!this.activeWindows.has(firefoxWindow)"
               (click)="toggleWindow('#firefox-window'); reorderWindows(firefoxWindow)">
         <img height="25" width="25"
              src="https://www.mozilla.org/media/protocol/img/logos/firefox/browser/logo.eb1324e44442.svg"
              alt="firefox"/>
       </button>
-      <button class="button is-ghost" id="explorer-window-button"
+      <button class="button" id="explorer-window-button" [class.is-dark]="this.activeWindows.has(explorerWindow)"
+              [class.is-ghost]="!this.activeWindows.has(explorerWindow)"
               (click)="toggleWindow('#explorer-window'); reorderWindows(explorerWindow)">
         <img height="25" width="25"
              src="https://raw.githubusercontent.com/kuroehanako/Cobalt-icons/main/Cobalt/scalable/apps/system-file-manager.svg"
