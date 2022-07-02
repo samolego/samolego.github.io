@@ -18,11 +18,11 @@ jobs:
         node-version: '16.x'
     - name: Installing Angular
       run: npm install -g @angular/cli
-      
+
     - name: npm install
       run: npm install
     - name: Production build
-      run: ng build --prod --base-href https://samolego.github.io
+      run: ng build --base-href https://samolego.github.io
     - name: Providing 404 page
       run: cp docs/index.html docs/404.html
     - name: Github Pages
