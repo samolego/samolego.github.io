@@ -9,7 +9,7 @@
         <div class="title-bar" cdkDragHandle>
           <div class="mt-1">
             <i class="fa-solid fa-file-lines mx-2"></i>
-            <span class="logo-description">index.html - Notepad</span>
+            <span class="logo-description">Editing {{this.router.url}}/index.html - Notepad</span>
           </div>
           <div class="window-buttons">
             <span class="minimize" (click)="toggleWindow('#notepad-window'); $event.stopPropagation()">&#8212;</span>
@@ -70,20 +70,24 @@
             </ng-container>
           </div>
           <div class="column">
-            <div class="columns is-vcentered p-2">
+            <div class="columns is-vcentered p-2 is-multiline">
               <ng-container *ngFor="let path of this.components">
-                <div class="column is-1 has-text-centered" *ngIf="this.canShowDir(path)">
-                  <a class="button is-small is-ghost mb-2" (click)="this.router.navigateByUrl(path)">
+                <div class="column is-1-desktop is-2-mobile has-text-centered-desktop" *ngIf="this.canShowDir(path)">
+                  <a class="button is-small is-text mb-2" (click)="this.router.navigateByUrl(path)"
+                     (contextmenu)="this.onFileRightClick($event, path)">
                     <img
+                      style="min-width: 35px; max-width: 35px;"
                       src="https://raw.githubusercontent.com/kuroehanako/Cobalt-icons/main/Cobalt/scalable/places/folder.svg"
                       alt="folder"/>
                   </a>
                   {{ path !== '**' ? path.split("/").pop() : '/dev/null' }}
                 </div>
               </ng-container>
-              <div class="column is-1 has-text-centered">
-                <a class="button is-small is-ghost mb-2" (click)="this.openNotepad(); $event.stopPropagation()">
+              <div class="column is-1-desktop is-2-mobile has-text-centered-desktop">
+                <a class="button is-small is-text mb-2" (click)="this.openNotepad(); $event.stopPropagation()"
+                   (contextmenu)="this.onFileRightClick($event, 'index.html')">
                   <img
+                    style="min-width: 35px; max-width: 35px;"
                     src="https://raw.githubusercontent.com/kuroehanako/Cobalt-icons/main/Cobalt/scalable/apps/kate.svg"
                     alt="notepad"/>
                 </a>
@@ -94,6 +98,19 @@
         </div>
       </div>
     </div>
+
+    <!-- an hidden div is created to set the position of appearance of the menu-->
+    <div style="visibility: hidden; position: fixed;"
+         [style.left]="menuTopLeftPosition.x"
+         [style.top]="menuTopLeftPosition.y"
+         [matMenuTriggerFor]="rightMenu"></div>
+
+    <!-- standard material menu -->
+    <mat-menu #rightMenu="matMenu">
+      <ng-template matMenuContent let-item="item">
+        <button mat-menu-item (click)="this.deleteFile($event)">Delete</button>
+      </ng-template>
+    </mat-menu>
 
     <div id="firefox-window" class="window box" cdkDrag (click)="reorderWindows(firefoxWindow)"
          (cdkDragStarted)="reorderWindows(firefoxWindow)" #firefoxWindow>
@@ -119,7 +136,8 @@
         </div>
       </div>
       <div id="main-content" class="window-content has-background-white">
-        <nav class="navbar has-background-success-dark has-text-light" role="navigation" aria-label="main navigation"
+        <nav class="navbar has-background-success-dark is-success has-shadow" role="navigation"
+             aria-label="main navigation"
              *ngIf="this.components.has(this.router.url.substring(1)) && this.router.url !== '/**'">
           <div class="navbar-brand">
             <a class="navbar-item" routerLink="home">
@@ -127,19 +145,21 @@
             </a>
 
             <a role="button" class="navbar-burger has-text-light" aria-label="menu" aria-expanded="false"
-               data-target="navbarBasicExample">
+               data-target="navbarBasicExample" (click)="this.navbarExtended = !this.navbarExtended;"
+               [ngClass]="this.navbarExtended ? 'is-active' : ''">
               <span aria-hidden="true"></span>
               <span aria-hidden="true"></span>
               <span aria-hidden="true"></span>
             </a>
           </div>
 
-          <div id="navbar" class="navbar-menu">
+          <div class="navbar-menu has-background-success-dark is-success"
+               [ngClass]="this.navbarExtended ? 'is-active' : ''">
             <div class="navbar-start">
-              <a class="navbar-item has-text-black" routerLink="home">
+              <a class="navbar-item" routerLink="home" (click)="this.navbarExtended = false;">
                 Home
               </a>
-              <a class="navbar-item has-text-black" routerLink="donate">
+              <a class="navbar-item" routerLink="donate" (click)="this.navbarExtended = false;">
                 Donate
               </a>
             </div>

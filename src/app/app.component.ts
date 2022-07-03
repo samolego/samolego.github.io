@@ -1,6 +1,7 @@
-import {Component, ElementRef, Inject} from '@angular/core';
+import {Component, ElementRef, Inject, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DOCUMENT} from "@angular/common";
+import {MatMenuTrigger} from "@angular/material/menu";
 
 
 @Component({
@@ -16,9 +17,11 @@ export class AppComponent {
   private fullscreen: boolean;
   components: Set<string>;
   activeWindows: Set<HTMLElement>;
+  navbarExtended: boolean;
 
   constructor(public router: Router, private elRef: ElementRef, @Inject(DOCUMENT) private document: any, public route: ActivatedRoute) {
     this.fullscreen = false;
+    this.navbarExtended = false;
 
     // Setting available components
     this.components = new Set();
@@ -141,6 +144,7 @@ export class AppComponent {
 
   }
 
+
   /* Close fullscreen */
   closeFullscreen() {
     if (this.document.exitFullscreen) {
@@ -178,12 +182,12 @@ export class AppComponent {
     // Check router url and path
     path = '/' + path;
 
-    if (this.router.url == path) {
+    if (this.router.url === path) {
       return false;
     }
 
-    if (this.router.url == '/') {
-      return path.split('/').length == 2;
+    if (this.router.url === '/') {
+      return path.split('/').length === 2;
     }
 
     if (this.router.url.split('/').length === path.split('/').length) {
@@ -236,5 +240,56 @@ export class AppComponent {
 
   reloadNotepad() {
     this.notepadContent(this.elRef.nativeElement.querySelector("#main-content router-outlet").nextSibling.innerHTML);
+  }
+
+  @ViewChild(MatMenuTrigger, {static: true}) matMenuTrigger: MatMenuTrigger | undefined;
+  menuTopLeftPosition = {
+    x: "0px",
+    y: "0px"
+  };
+
+  onFileRightClick(event: MouseEvent, path: string) {
+    event.preventDefault();
+
+    this.menuTopLeftPosition.x = event.clientX + 'px';
+    this.menuTopLeftPosition.y = event.clientY + 'px';
+
+    // @ts-ignore
+    this.matMenuTrigger.menuData = {item: path};
+
+    // we open the menu
+    // @ts-ignore
+    this.matMenuTrigger.openMenu();
+  }
+
+  deleteFile(event: MouseEvent) {
+    const item = this.matMenuTrigger?.menuData.item;
+    if (item) {
+      console.log(item);
+      let path = "";
+      if (item === 'index.html') {
+        path = this.router.url.substring(1);
+        console.log("url:", path);
+      } else {
+        path = item;
+      }
+
+      this.components.delete(path);
+
+
+      for (const el of this.router.config) {
+        console.log("Checking", el);
+        if (el.path === path) {
+          console.log("Found", el);
+          el.path = '';
+          el.component = undefined;
+          if (this.router.url.substring(1) === path) {
+            // Redirect to 404
+            this.router.navigateByUrl('/404');
+          }
+          break;
+        }
+      }
+    }
   }
 }

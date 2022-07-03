@@ -11,6 +11,7 @@ import {DonateComponent} from './donate/donate.component';
 import {FormsModule} from "@angular/forms";
 import {ProjectsComponent} from './projects/projects.component';
 import {ProjectComponent} from './projects/project/project.component';
+import {MatMenuModule} from "@angular/material/menu";
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import {ProjectComponent} from './projects/project/project.component';
     AppRoutingModule,
     BrowserAnimationsModule,
     DragDropModule,
-    FormsModule
+    FormsModule,
+    MatMenuModule
   ],
   providers: [],
   bootstrap: [AppComponent]

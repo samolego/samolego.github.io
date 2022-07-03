@@ -15,7 +15,7 @@ export class E404Component implements OnInit {
     this.counterInterval = setInterval(() => {
       if (this.counter >= 100) {
         this.counter = 0;
-        this.router.navigate(['/']);
+        this.router.navigate(['/home']);
       } else {
         this.counter += 1;
       }
